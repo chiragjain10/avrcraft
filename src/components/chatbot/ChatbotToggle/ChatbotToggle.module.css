@@ -1,0 +1,70 @@
+.chatbotToggle {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 25px rgba(201, 169, 110, 0.3);
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+
+.chatbotToggle:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(201, 169, 110, 0.4);
+}
+
+.chatbotToggle.open {
+  background: linear-gradient(135deg, #2d5a4d, #1a2b3c);
+  transform: rotate(90deg);
+}
+
+.chatbotToggle.open:hover {
+  transform: rotate(90deg) translateY(-3px) scale(1.05);
+}
+
+.notificationDot {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  background: #2d5a4d;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 768px) {
+  .chatbotToggle {
+    bottom: 1rem;
+    right: 1rem;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .notificationDot {
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+  }
+}

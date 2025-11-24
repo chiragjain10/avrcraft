@@ -1,0 +1,303 @@
+.orders {
+  padding: 0;
+}
+
+/* Page Header */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.pageTitle {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--admin-primary);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.pageSubtitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--admin-text-light);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Filters Section */
+.filtersSection {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+}
+
+.searchBox {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--admin-text-light);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--admin-text);
+  background: var(--admin-bg);
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--admin-accent);
+  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
+}
+
+.searchInput::placeholder {
+  color: var(--admin-text-light);
+}
+
+.filterControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.statusFilter {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--admin-text);
+  background: var(--admin-bg);
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.statusFilter:focus {
+  outline: none;
+  border-color: var(--admin-accent);
+}
+
+/* Table Section */
+.tableSection {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Order ID */
+.orderId {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.orderId strong {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--admin-primary);
+}
+
+.orderDate {
+  font-family: var(--font-accent);
+  font-size: 0.8rem;
+  color: var(--admin-text-light);
+}
+
+/* Customer Info */
+.customerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.customerInfo strong {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+.customerEmail {
+  font-family: var(--font-accent);
+  font-size: 0.8rem;
+  color: var(--admin-text-light);
+}
+
+/* Items Count */
+.itemsCount {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--admin-text);
+  background: var(--admin-bg);
+  padding: 0.4rem 0.75rem;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+/* Total Amount */
+.totalAmount {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--admin-primary);
+}
+
+.totalAmount svg {
+  color: var(--admin-success);
+}
+
+/* Status */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+  font-family: var(--font-accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  width: fit-content;
+}
+
+.status.completed {
+  background: rgba(39, 174, 96, 0.1);
+  color: var(--admin-success);
+}
+
+.status.processing {
+  background: rgba(52, 152, 219, 0.1);
+  color: var(--admin-info);
+}
+
+.status.shipped {
+  background: rgba(155, 89, 182, 0.1);
+  color: #9b59b6;
+}
+
+.status.pending {
+  background: rgba(243, 156, 18, 0.1);
+  color: var(--admin-warning);
+}
+
+.status.cancelled {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--admin-error);
+}
+
+/* Shipping Address */
+.shippingAddress {
+  font-family: var(--font-accent);
+  font-size: 0.85rem;
+  color: var(--admin-text-light);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  color: var(--admin-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background: var(--admin-primary);
+  color: white;
+  border-color: var(--admin-primary);
+  transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pageHeader {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .filtersSection {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .searchBox {
+    max-width: none;
+  }
+  
+  .filterControls {
+    justify-content: flex-start;
+  }
+  
+  .customerInfo strong {
+    font-size: 0.9rem;
+  }
+  
+  .shippingAddress {
+    max-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: 1.5rem;
+  }
+  
+  .status {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .totalAmount {
+    font-size: 0.9rem;
+  }
+}

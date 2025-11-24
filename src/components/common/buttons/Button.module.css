@@ -1,0 +1,136 @@
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #1a2b3c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background: #c9a96e;
+  color: #1a2b3c;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(201, 169, 110, 0.3);
+}
+
+.primaryButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.primaryButton:disabled {
+  background: #e8e4e1;
+  color: #888;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: #1a2b3c;
+  border: 1px solid #e8e4e1;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  border-color: #c9a96e;
+  color: #c9a96e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.secondaryButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.secondaryButton:disabled {
+  background: #f8f8f8;
+  color: #888;
+  border-color: #e8e4e1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Size Variants */
+.primaryButton.large,
+.secondaryButton.large {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.primaryButton.small,
+.secondaryButton.small {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+}
+
+/* Full Width */
+.primaryButton.fullWidth,
+.secondaryButton.fullWidth {
+  width: 100%;
+}
+
+/* Icon Only */
+.primaryButton.iconOnly,
+.secondaryButton.iconOnly {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.primaryButton.iconOnly.large,
+.secondaryButton.iconOnly.large {
+  width: 48px;
+  height: 48px;
+}
+
+.primaryButton.iconOnly.small,
+.secondaryButton.iconOnly.small {
+  width: 32px;
+  height: 32px;
+}

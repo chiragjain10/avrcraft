@@ -1,0 +1,99 @@
+.message {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.userMessage {
+  flex-direction: row-reverse;
+}
+
+.messageAvatar {
+  flex-shrink: 0;
+}
+
+.botAvatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  background: #1a2b3c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.messageContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-width: 80%;
+}
+
+.userMessage .messageContent {
+  align-items: flex-end;
+}
+
+.messageBubble {
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  position: relative;
+  animation: messageAppear 0.3s ease;
+}
+
+@keyframes messageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.botMessage .messageBubble {
+  background: #e8e4e1;
+  border-bottom-left-radius: 4px;
+  color: #3c3c3c;
+}
+
+.userMessage .messageBubble {
+  background: #1a2b3c;
+  border-bottom-right-radius: 4px;
+  color: #f8f5f2;
+}
+
+.messageText {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.messageTime {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: 'Lora', serif;
+  font-size: 0.7rem;
+  color: #888;
+  opacity: 0.7;
+}
+
+.userMessage .messageTime {
+  color: #c9a96e;
+}

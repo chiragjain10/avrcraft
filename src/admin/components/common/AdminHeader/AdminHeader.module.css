@@ -1,0 +1,430 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  background: var(--admin-card);
+  padding: 0 2rem;
+  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid var(--admin-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  color: var(--admin-text);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menuButton:hover {
+  background: var(--admin-bg);
+  color: var(--admin-accent);
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+}
+
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s ease;
+  min-width: 300px;
+}
+
+.searchContainer:focus-within {
+  border-color: var(--admin-accent);
+  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
+}
+
+.searchIcon {
+  color: var(--admin-text-light);
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--admin-text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.searchInput::placeholder {
+  color: var(--admin-text-light);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.themeButton,
+.notificationButton {
+  background: none;
+  border: none;
+  color: var(--admin-text);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.themeButton:hover,
+.notificationButton:hover {
+  background: var(--admin-bg);
+  color: var(--admin-accent);
+}
+
+/* Notifications */
+.notificationsContainer {
+  position: relative;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--admin-error);
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(25%, -25%);
+}
+
+.notificationsDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  width: 320px;
+  max-height: 400px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  z-index: 1000;
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.dropdownHeader h3 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  color: var(--admin-text);
+  margin: 0;
+}
+
+.clearAllButton {
+  background: none;
+  border: none;
+  color: var(--admin-accent);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.clearAllButton:hover {
+  background: var(--admin-bg);
+}
+
+.notificationsList {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notificationItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--admin-border);
+  transition: all 0.2s ease;
+}
+
+.notificationItem:hover {
+  background: var(--admin-bg);
+}
+
+.notificationItem:last-child {
+  border-bottom: none;
+}
+
+.notificationContent {
+  flex: 1;
+}
+
+.notificationMessage {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--admin-text);
+  margin: 0 0 0.25rem 0;
+  line-height: 1.4;
+}
+
+.notificationTime {
+  font-family: var(--font-accent);
+  font-size: 0.75rem;
+  color: var(--admin-text-light);
+}
+
+.notificationClose {
+  background: none;
+  border: none;
+  color: var(--admin-text-light);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.notificationClose:hover {
+  color: var(--admin-error);
+  background: var(--admin-bg);
+}
+
+.noNotifications {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--admin-text-light);
+  text-align: center;
+}
+
+.noNotifications svg {
+  margin-bottom: 0.5rem;
+  opacity: 0.5;
+}
+
+.noNotifications p {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* User Menu */
+.userMenuContainer {
+  position: relative;
+}
+
+.userButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--admin-text);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.userButton:hover {
+  background: var(--admin-bg);
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  background: var(--admin-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--admin-primary);
+  font-weight: 600;
+  font-size: 0.8rem;
+  overflow: hidden;
+}
+
+.userAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.userName {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.userDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  width: 280px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  z-index: 1000;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.userAvatarLarge {
+  width: 48px;
+  height: 48px;
+  background: var(--admin-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--admin-primary);
+  font-weight: 600;
+  font-size: 1rem;
+  overflow: hidden;
+}
+
+.userAvatarLarge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.userNameLarge {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--admin-text);
+  margin-bottom: 0.25rem;
+}
+
+.userEmail {
+  font-family: var(--font-accent);
+  font-size: 0.8rem;
+  color: var(--admin-text-light);
+}
+
+.dropdownMenu {
+  padding: 0.5rem;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--admin-text);
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.menuItem:hover {
+  background: var(--admin-bg);
+  color: var(--admin-accent);
+}
+
+.menuItem.logoutItem {
+  color: var(--admin-error);
+}
+
+.menuItem.logoutItem:hover {
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--admin-border);
+  margin: 0.5rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    padding: 0 1rem;
+  }
+  
+  .searchContainer {
+    min-width: 200px;
+  }
+  
+  .notificationsDropdown {
+    width: 280px;
+    right: -50%;
+  }
+  
+  .userDropdown {
+    width: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchContainer {
+    display: none;
+  }
+  
+  .userName {
+    display: none;
+  }
+}

@@ -1,0 +1,369 @@
+.authContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f5f2 0%, #e8e4e1 100%);
+  padding: 2rem 1rem;
+}
+
+.authCard {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e8e4e1;
+  width: 100%;
+  max-width: 450px;
+}
+
+.authHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  font-family: 'Merriweather', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #c9a96e;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+.authTitle {
+  font-family: 'Merriweather', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a2b3c;
+  margin: 0 0 0.5rem 0;
+}
+
+.authSubtitle {
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  color: #3c3c3c;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.errorAlert {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formLabel {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1a2b3c;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 1rem;
+  color: #3c3c3c;
+  opacity: 0.6;
+}
+
+.formInput {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 1px solid #e8e4e1;
+  border-radius: 8px;
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  color: #1a2b3c;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #c9a96e;
+  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
+}
+
+.formInput:disabled {
+  background: #f8f8f8;
+  cursor: not-allowed;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #3c3c3c;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.passwordToggle:hover {
+  opacity: 1;
+  background: #f8f5f2;
+}
+
+.formOptions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  color: #3c3c3c;
+  cursor: pointer;
+}
+
+.checkboxCustom {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #e8e4e1;
+  border-radius: 4px;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked + .checkboxCustom {
+  background: #c9a96e;
+  border-color: #c9a96e;
+}
+
+.forgotLink {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  color: #c9a96e;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.forgotLink:hover {
+  color: #1a2b3c;
+  text-decoration: underline;
+}
+
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #1a2b3c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #c9a96e;
+  color: #1a2b3c;
+  transform: translateY(-2px);
+}
+
+.submitButton:disabled {
+  background: #e8e4e1;
+  color: #888;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.authFooter {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e8e4e1;
+}
+
+.footerText {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  color: #3c3c3c;
+  margin: 0;
+}
+
+.footerLink {
+  color: #c9a96e;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.footerLink:hover {
+  color: #1a2b3c;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .authCard {
+    padding: 2rem;
+  }
+  
+  .authTitle {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .authContainer {
+    padding: 1rem;
+  }
+  
+  .authCard {
+    padding: 1.5rem;
+  }
+  
+  .formOptions {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+}
+
+
+
+/* Registration specific styles */
+.nameGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.passwordStrength {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.strengthBar {
+  flex: 1;
+  height: 4px;
+  background: #e8e4e1;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.strengthFill {
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.strengthText {
+  font-family: 'Lora', serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  min-width: 40px;
+}
+
+.passwordRequirements {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Lora', serif;
+  font-size: 0.8rem;
+  color: #3c3c3c;
+}
+
+.requirementMet {
+  color: #16a34a;
+}
+
+.requirementUnmet {
+  color: #e8e4e1;
+}
+
+.passwordMismatch {
+  color: #dc2626;
+  font-family: 'Lora', serif;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.termsAgreement {
+  margin: 1rem 0;
+}
+
+.termsText {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  color: #3c3c3c;
+  line-height: 1.4;
+}
+
+.termsLink {
+  color: #c9a96e;
+  text-decoration: none;
+  font-weight: 500;
+  margin: 0 0.25rem;
+}
+
+.termsLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .nameGroup {
+    grid-template-columns: 1fr;
+  }
+}

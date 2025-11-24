@@ -1,0 +1,130 @@
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.pageLoader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f8f5f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.inlineLoader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.spinner {
+  position: relative;
+}
+
+.spinnerCircle {
+  border: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Sizes */
+.spinner.small {
+  width: 20px;
+  height: 20px;
+}
+
+.spinner.small .spinnerCircle {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.spinner.medium {
+  width: 40px;
+  height: 40px;
+}
+
+.spinner.medium .spinnerCircle {
+  width: 40px;
+  height: 40px;
+  border-width: 3px;
+}
+
+.spinner.large {
+  width: 60px;
+  height: 60px;
+}
+
+.spinner.large .spinnerCircle {
+  width: 60px;
+  height: 60px;
+  border-width: 4px;
+}
+
+/* Colors */
+.spinner.primary .spinnerCircle {
+  border-top-color: #c9a96e;
+  border-right-color: #c9a96e;
+  border-bottom-color: rgba(201, 169, 110, 0.3);
+  border-left-color: rgba(201, 169, 110, 0.3);
+}
+
+.spinner.secondary .spinnerCircle {
+  border-top-color: #1a2b3c;
+  border-right-color: #1a2b3c;
+  border-bottom-color: rgba(26, 43, 60, 0.3);
+  border-left-color: rgba(26, 43, 60, 0.3);
+}
+
+.spinner.white .spinnerCircle {
+  border-top-color: white;
+  border-right-color: white;
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+  border-left-color: rgba(255, 255, 255, 0.3);
+}
+
+.loadingText {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  color: #3c3c3c;
+  margin: 0;
+  text-align: center;
+}
+
+.pageLoader .loadingText {
+  font-size: 1.1rem;
+  color: #1a2b3c;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Pulse Animation */
+.spinner.pulse .spinnerCircle {
+  animation: pulse 1.5s ease-in-out infinite;
+  border: none;
+  background: #c9a96e;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}

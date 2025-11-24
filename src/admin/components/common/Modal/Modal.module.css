@@ -1,0 +1,161 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  background: var(--admin-card);
+  border-radius: 12px;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.2s ease-out;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal Sizes */
+.modal.small {
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal.medium {
+  width: 100%;
+  max-width: 600px;
+}
+
+.modal.large {
+  width: 100%;
+  max-width: 800px;
+}
+
+.modal.xlarge {
+  width: 100%;
+  max-width: 1000px;
+}
+
+/* Modal Header */
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--admin-border);
+  background: var(--admin-card);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.modalTitle {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--admin-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--admin-text-light);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  background: var(--admin-bg);
+  color: var(--admin-error);
+}
+
+/* Modal Content */
+.modalContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  max-height: calc(90vh - 80px);
+}
+
+/* Scrollbar for Modal Content */
+.modalContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modalContent::-webkit-scrollbar-track {
+  background: var(--admin-bg);
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+  background: var(--admin-border);
+  border-radius: 3px;
+}
+
+.modalContent::-webkit-scrollbar-thumb:hover {
+  background: var(--admin-accent);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modalOverlay {
+    padding: 0.5rem;
+  }
+  
+  .modalHeader {
+    padding: 1.25rem 1.5rem;
+  }
+  
+  .modalContent {
+    padding: 1.5rem;
+  }
+  
+  .modalTitle {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalHeader {
+    padding: 1rem 1.25rem;
+  }
+  
+  .modalContent {
+    padding: 1.25rem;
+  }
+}
