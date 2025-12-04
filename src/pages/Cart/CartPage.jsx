@@ -1,13 +1,14 @@
+// src/pages/CartPage/CartPage.jsx
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { 
-  ShoppingCart, 
-  Trash2, 
-  Plus, 
-  Minus, 
-  ArrowRight, 
-  Heart, 
-  Shield, 
+import {
+  ShoppingCart,
+  Trash2,
+  Plus,
+  Minus,
+  ArrowRight,
+  Heart,
+  Shield,
   Truck,
   ArrowLeft
 } from 'lucide-react'
@@ -16,29 +17,46 @@ import { useAuth } from '../../contexts/AuthContext'
 import styles from './CartPage.module.css'
 
 const CartPage = () => {
-  const { items, updateQuantity, removeFromCart, clearCart, getCartTotal, getCartItemsCount } = useCart()
-  const { isAuthenticated, user } = useAuth()
+  const { items, updateQuantity, removeFromCart, clearCart, getCartSummary, getProductQuantity } = useCart()
+  const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
-  
+
   const [isUpdating, setIsUpdating] = useState(false)
 
   const handleQuantityChange = async (productId, newQuantity) => {
     if (newQuantity < 1) return
-    
-    setIsUpdating(true)
-    updateQuantity(productId, newQuantity)
-    
-    // Simulate API call delay
-    setTimeout(() => setIsUpdating(false), 300)
+
+    try {
+      setIsUpdating(true)
+      await updateQuantity(productId, newQuantity)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setTimeout(() => setIsUpdating(false), 200)
+    }
   }
 
-  const handleRemoveItem = (productId) => {
-    removeFromCart(productId)
+  const handleRemoveItem = async (productId) => {
+    try {
+      setIsUpdating(true)
+      await removeFromCart(productId)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setTimeout(() => setIsUpdating(false), 200)
+    }
   }
 
-  const handleClearCart = () => {
+  const handleClearCart = async () => {
     if (window.confirm('Are you sure you want to clear your cart?')) {
-      clearCart()
+      try {
+        setIsUpdating(true)
+        await clearCart()
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setTimeout(() => setIsUpdating(false), 200)
+      }
     }
   }
 
@@ -47,12 +65,12 @@ const CartPage = () => {
       navigate('/login', { state: { from: '/cart' } })
       return
     }
-    
-    if (items.length === 0) {
+
+    if ((items?.length || 0) === 0) {
       alert('Your cart is empty')
       return
     }
-    
+
     navigate('/checkout')
   }
 
@@ -60,9 +78,10 @@ const CartPage = () => {
     navigate('/shop')
   }
 
-  const shippingCost = getCartTotal() > 5000 ? 0 : 200
-  const tax = getCartTotal() * 0.18 // 18% GST
-  const orderTotal = getCartTotal() + shippingCost + tax
+  const subtotal = Number(getCartSummary() || 0)
+  const shippingCost = subtotal > 5000 ? 0 : 200
+  const tax = subtotal * 0.18 // 18% GST
+  const orderTotal = subtotal + shippingCost + tax
 
   if (!isAuthenticated) {
     return (
@@ -86,7 +105,7 @@ const CartPage = () => {
     )
   }
 
-  if (items.length === 0) {
+  if ((items?.length || 0) === 0) {
     return (
       <div className={styles.cartContainer}>
         <div className={styles.emptyCart}>
@@ -103,12 +122,11 @@ const CartPage = () => {
               Browse Categories
             </Link>
           </div>
-          
+
           {/* Recently Viewed Suggestions */}
           <div className={styles.suggestions}>
             <h3>You Might Like</h3>
             <div className={styles.suggestionGrid}>
-              {/* These would be actual product suggestions in a real app */}
               <div className={styles.suggestionItem}>
                 <div className={styles.suggestionImage}></div>
                 <div className={styles.suggestionInfo}>
@@ -140,7 +158,7 @@ const CartPage = () => {
               Back
             </button>
             <h1 className={styles.cartTitle}>Shopping Cart</h1>
-            <span className={styles.itemCount}>({getCartItemsCount()} items)</span>
+            <span className={styles.itemCount}>({getProductQuantity()} items)</span>
           </div>
         </div>
       </div>
@@ -151,7 +169,7 @@ const CartPage = () => {
           <div className={styles.cartItems}>
             <div className={styles.itemsHeader}>
               <h2>Cart Items</h2>
-              <button onClick={handleClearCart} className={styles.clearCart}>
+              <button onClick={handleClearCart} className={styles.clearCart} disabled={isUpdating}>
                 <Trash2 size={16} />
                 Clear Cart
               </button>
@@ -159,8 +177,8 @@ const CartPage = () => {
 
             <div className={styles.itemsList}>
               {items.map((item) => (
-                <CartItem 
-                  key={item.id}
+                <CartItem
+                  key={item.productId || item.id}
                   item={item}
                   onQuantityChange={handleQuantityChange}
                   onRemove={handleRemoveItem}
@@ -192,11 +210,11 @@ const CartPage = () => {
           <div className={styles.orderSummary}>
             <div className={styles.summaryCard}>
               <h3 className={styles.summaryTitle}>Order Summary</h3>
-              
+
               <div className={styles.summaryDetails}>
                 <div className={styles.summaryRow}>
-                  <span>Subtotal ({getCartItemsCount()} items)</span>
-                  <span>₹{getCartTotal().toLocaleString()}</span>
+                  <span>Subtotal ({getProductQuantity()} items)</span>
+                  <span>₹{subtotal.toLocaleString()}</span>
                 </div>
                 <div className={styles.summaryRow}>
                   <span>Shipping</span>
@@ -222,8 +240,8 @@ const CartPage = () => {
               {/* Promo Code */}
               <div className={styles.promoSection}>
                 <div className={styles.promoInput}>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Enter promo code"
                     className={styles.promoField}
                   />
@@ -232,7 +250,7 @@ const CartPage = () => {
               </div>
 
               {/* Checkout Button */}
-              <button 
+              <button
                 onClick={proceedToCheckout}
                 className={styles.checkoutButton}
                 disabled={isUpdating}
@@ -258,7 +276,7 @@ const CartPage = () => {
               <div className={styles.savingsNotice}>
                 <div className={styles.savingsIcon}>🎁</div>
                 <div className={styles.savingsText}>
-                  <strong>Add ₹{(5000 - getCartTotal()).toLocaleString()} more</strong>
+                  <strong>Add ₹{(5000 - subtotal).toLocaleString()} more</strong>
                   <span>to get FREE shipping!</span>
                 </div>
               </div>
@@ -276,17 +294,19 @@ const CartItem = ({ item, onQuantityChange, onRemove, isUpdating }) => {
 
   const handleRemove = async () => {
     setIsRemoving(true)
-    // Simulate API call delay
-    setTimeout(() => {
-      onRemove(item.id)
+    try {
+      await onRemove(item.productId)
+    } catch (err) {
+      console.error(err)
+    } finally {
       setIsRemoving(false)
-    }, 300)
+    }
   }
 
   const moveToWishlist = () => {
     // In a real app, this would add to wishlist
     alert(`Moved ${item.name} to wishlist`)
-    onRemove(item.id)
+    onRemove(item.productId)
   }
 
   return (
@@ -298,7 +318,7 @@ const CartItem = ({ item, onQuantityChange, onRemove, isUpdating }) => {
       <div className={styles.itemDetails}>
         <div className={styles.itemHeader}>
           <h3 className={styles.itemName}>{item.name}</h3>
-          <span className={styles.itemPrice}>₹{(item.price * item.quantity).toLocaleString()}</span>
+          <span className={styles.itemPrice}>₹{(Number(item.price || 0) * Number(item.quantity || 0)).toLocaleString()}</span>
         </div>
 
         {item.artisan && (
@@ -317,7 +337,7 @@ const CartItem = ({ item, onQuantityChange, onRemove, isUpdating }) => {
         </div>
 
         <div className={styles.itemActions}>
-          <button 
+          <button
             onClick={moveToWishlist}
             className={styles.wishlistAction}
             disabled={isUpdating}
@@ -325,7 +345,7 @@ const CartItem = ({ item, onQuantityChange, onRemove, isUpdating }) => {
             <Heart size={16} />
             Save for later
           </button>
-          <button 
+          <button
             onClick={handleRemove}
             className={styles.removeAction}
             disabled={isUpdating || isRemoving}
@@ -338,24 +358,24 @@ const CartItem = ({ item, onQuantityChange, onRemove, isUpdating }) => {
 
       <div className={styles.quantitySection}>
         <div className={styles.quantitySelector}>
-          <button 
-            onClick={() => onQuantityChange(item.id, item.quantity - 1)}
-            disabled={item.quantity <= 1 || isUpdating}
+          <button
+            onClick={() => onQuantityChange(item.productId, (Number(item.quantity) || 0) - 1)}
+            disabled={(Number(item.quantity) || 0) <= 1 || isUpdating}
             className={styles.quantityButton}
           >
             <Minus size={16} />
           </button>
           <span className={styles.quantityValue}>{item.quantity}</span>
-          <button 
-            onClick={() => onQuantityChange(item.id, item.quantity + 1)}
-            disabled={item.quantity >= 10 || isUpdating}
+          <button
+            onClick={() => onQuantityChange(item.productId, (Number(item.quantity) || 0) + 1)}
+            disabled={(Number(item.quantity) || 0) >= 10 || isUpdating}
             className={styles.quantityButton}
           >
             <Plus size={16} />
           </button>
         </div>
         <div className={styles.unitPrice}>
-          ₹{item.price.toLocaleString()} each
+          ₹{Number(item.price || 0).toLocaleString()} each
         </div>
       </div>
     </div>

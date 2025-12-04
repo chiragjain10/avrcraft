@@ -73,8 +73,8 @@
 
 /* Colors */
 .spinner.primary .spinnerCircle {
-  border-top-color: #c9a96e;
-  border-right-color: #c9a96e;
+  border-top-color: #2c3e50;
+  border-right-color: #2c3e50;
   border-bottom-color: rgba(201, 169, 110, 0.3);
   border-left-color: rgba(201, 169, 110, 0.3);
 }
@@ -115,7 +115,7 @@
 .spinner.pulse .spinnerCircle {
   animation: pulse 1.5s ease-in-out infinite;
   border: none;
-  background: #c9a96e;
+  background: #2c3e50;
 }
 
 @keyframes pulse {

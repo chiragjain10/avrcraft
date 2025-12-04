@@ -3,7 +3,7 @@ export const colors = {
     navy: '#1a2b3c',
     cream: '#f8f5f2',
     gray: '#e8e4e1',
-    gold: '#c9a96e',
+    gold: '#2c3e50',
   },
   secondary: {
     green: '#2d5a4d',

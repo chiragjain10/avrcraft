@@ -10,7 +10,7 @@
 }
 
 .cartItem:hover {
-  border-color: #c9a96e;
+  border-color: #2c3e50;
 }
 
 .itemImage {
@@ -38,7 +38,7 @@
 }
 
 .itemName {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
   color: #1a2b3c;
@@ -48,13 +48,13 @@
 }
 
 .itemName:hover {
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .artisanInfo {
   font-family: 'Lora', serif;
   font-size: 0.8rem;
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .itemAttributes {
@@ -74,7 +74,7 @@
 }
 
 .itemPrice {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -103,7 +103,7 @@
 }
 
 .wishlistAction {
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .wishlistAction:hover {

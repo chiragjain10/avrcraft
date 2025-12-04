@@ -49,7 +49,7 @@
 .botAvatar {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  background: #2c3e50;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -57,7 +57,7 @@
 }
 
 .chatbotTitle {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1rem;
   font-weight: 600;
   margin: 0;
@@ -69,7 +69,7 @@
   font-size: 0.75rem;
   margin: 0;
   opacity: 0.8;
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .chatbotActions {
@@ -212,7 +212,7 @@
 }
 
 .messageInput:focus {
-  border-color: #c9a96e;
+  border-color: #2c3e50;
   box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
 }
 
@@ -236,7 +236,7 @@
 }
 
 .sendButton:hover:not(:disabled) {
-  background: #c9a96e;
+  background: #2c3e50;
   transform: scale(1.05);
 }
 

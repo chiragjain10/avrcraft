@@ -25,7 +25,7 @@
 }
 
 .breadcrumbLink:hover {
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .breadcrumbSeparator {
@@ -36,7 +36,7 @@
 .breadcrumbCurrent {
   font-family: 'Lora', serif;
   font-size: 0.9rem;
-  color: #c9a96e;
+  color: #2c3e50;
   font-weight: 500;
 }
 
@@ -56,14 +56,14 @@
   width: 40px;
   height: 40px;
   border: 3px solid #e8e4e1;
-  border-top: 3px solid #c9a96e;
+  border-top: 3px solid #2c3e50;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
 }
 
 .errorContainer h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.5rem;
   color: #1a2b3c;
   margin: 0 0 1rem 0;
@@ -111,7 +111,7 @@
 .productVisual {
   width: 80%;
   height: 80%;
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  background: #2c3e50;
   border-radius: 8px;
   opacity: 0.7;
 }
@@ -169,11 +169,11 @@
 }
 
 .thumbnail:hover {
-  border-color: #c9a96e;
+  border-color: #2c3e50;
 }
 
 .thumbnailActive {
-  border-color: #c9a96e;
+  border-color: #2c3e50;
 }
 
 .thumbnailPlaceholder {
@@ -213,8 +213,8 @@
 }
 
 .backButton:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
 }
 
 .headerActions {
@@ -238,8 +238,8 @@
 
 .wishlistButton:hover,
 .shareButton:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
 }
 
 .wishlistButton.inWishlist {
@@ -249,7 +249,7 @@
 }
 
 .productTitle {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -264,7 +264,7 @@
 }
 
 .artisanLink {
-  color: #c9a96e;
+  color: #2c3e50;
   text-decoration: none;
   font-weight: 500;
 }
@@ -285,7 +285,7 @@
 }
 
 .filledStar {
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .emptyStar {
@@ -314,7 +314,7 @@
 }
 
 .currentPrice {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -370,11 +370,11 @@
   background: #f8f5f2;
   padding: 1.5rem;
   border-radius: 12px;
-  border-left: 4px solid #c9a96e;
+  border-left: 4px solid #2c3e50;
 }
 
 .artisanStory h3 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.1rem;
   color: #1a2b3c;
   margin: 0 0 0.5rem 0;
@@ -471,7 +471,7 @@
 }
 
 .addToCartButton:hover:not(:disabled) {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
   transform: translateY(-2px);
 }
@@ -482,7 +482,7 @@
 }
 
 .buyNowButton {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
 }
 
@@ -566,8 +566,8 @@
 }
 
 .tabHeader.tabActive {
-  color: #c9a96e;
-  border-bottom-color: #c9a96e;
+  color: #2c3e50;
+  border-bottom-color: #2c3e50;
   background: #f8f5f2;
 }
 

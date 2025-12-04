@@ -52,13 +52,13 @@
 .offerBadge span {
   font-family: 'Lora', serif;
   font-size: 0.8rem;
-  color: #c9a96e;
+  color: #2c3e50;
   font-weight: 500;
   letter-spacing: 0.5px;
 }
 
 .offerTitle {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1.1;
@@ -67,7 +67,7 @@
 }
 
 .discountHighlight {
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  background: #2c3e50;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -109,7 +109,7 @@
 }
 
 .feature h4 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
   color: #f8f5f2;
@@ -147,7 +147,7 @@
 }
 
 .formTitle {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -194,7 +194,7 @@
 
 .countryCodeSelect:focus {
   outline: none;
-  border-color: #c9a96e;
+  border-color: #2c3e50;
   box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
 }
 
@@ -230,7 +230,7 @@
 
 .phoneInput:focus {
   outline: none;
-  border-color: #c9a96e;
+  border-color: #2c3e50;
   box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
 }
 
@@ -267,8 +267,8 @@
 }
 
 .checkboxInput:checked + .checkboxCustom {
-  background: #c9a96e;
-  border-color: #c9a96e;
+  background: #2c3e50;
+  border-color: #2c3e50;
 }
 
 .checkboxInput:checked + .checkboxCustom::after {
@@ -288,7 +288,7 @@
 }
 
 .termsLink {
-  color: #c9a96e;
+  color: #2c3e50;
   text-decoration: none;
   font-weight: 500;
 }
@@ -303,7 +303,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
   border: none;
   border-radius: 8px;
@@ -374,17 +374,17 @@
   width: 80px;
   height: 80px;
   background: rgba(201, 169, 110, 0.2);
-  border: 2px solid #c9a96e;
+  border: 2px solid #2c3e50;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 2rem;
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .successTitle {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2rem;
   font-weight: 700;
   color: #f8f5f2;
@@ -417,13 +417,13 @@
 }
 
 .benefit svg {
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .subscribeAgainButton {
   background: transparent;
-  color: #c9a96e;
-  border: 1px solid #c9a96e;
+  color: #2c3e50;
+  border: 1px solid #2c3e50;
   border-radius: 8px;
   padding: 1rem 2rem;
   font-family: 'Lora', serif;
@@ -434,7 +434,7 @@
 }
 
 .subscribeAgainButton:hover {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
   transform: translateY(-2px);
 }

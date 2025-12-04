@@ -21,7 +21,7 @@
   font-family: var(--font-heading);
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--admin-primary);
+  color: var(--admin-accent);
   margin: 0 0 1.5rem 0;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--admin-border);
@@ -186,7 +186,7 @@
   width: 40px;
   height: 40px;
   background: var(--admin-accent);
-  color: var(--admin-primary);
+  color: #ffffff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -288,7 +288,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: var(--admin-primary);
+  color: #ffffff;
   font-size: 12px;
   font-weight: bold;
 }
@@ -323,7 +323,7 @@
 .saveButton {
   padding: 0.75rem 2rem;
   background: var(--admin-accent);
-  color: var(--admin-primary);
+  color: #ffffff;
   border: none;
   border-radius: 8px;
   font-family: var(--font-body);
@@ -388,4 +388,46 @@
     width: 80px;
     height: 80px;
   }
+}
+
+/* Navigation Flags Section */
+.navigationFlags {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.flagsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.flagLabel {
+  font-weight: 500;
+  color: #333;
+  margin-left: 8px;
+}
+
+/* Responsive for navigation flags */
+@media (max-width: 768px) {
+  .flagsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .flagsRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Price field labels update */
+.label {
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
 }

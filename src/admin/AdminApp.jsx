@@ -8,6 +8,9 @@ import Blogs from './pages/Blogs/Blogs'
 import Orders from './pages/Orders/Orders'
 import Analytics from './pages/Analytics/Analytics'
 import './styles/admin-globals.css'
+import AdminArtisans from './pages/Artisans/AdminArtisans'
+import CreateArtisan from './pages/Artisans/CreateArtisan'
+import EditArtisan from './pages/Artisans/EditArtisan'
 
 const AdminApp = () => {
   return (
@@ -21,6 +24,9 @@ const AdminApp = () => {
           <Route path="blogs" element={<Blogs />} />
           <Route path="orders" element={<Orders />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route path="/admin/artisans" element={<AdminArtisans />} />
+          <Route path="/admin/artisans/create" element={<CreateArtisan />} />
+          <Route path="/admin/artisans/:id/edit" element={<EditArtisan />} />
         </Routes>
       </AdminLayout>
     </AdminProvider>

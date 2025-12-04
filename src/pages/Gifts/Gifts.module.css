@@ -1,0 +1,454 @@
+/* src/pages/Gifts/Gifts.module.css */
+.giftsPage {
+  padding: 60px 20px;
+  min-height: 70vh;
+  background: #f8f5f2;
+  font-family: 'Baskervville', serif;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.header h1 {
+  font-family: 'Merriweather', serif;
+  font-size: 3.5rem;
+  color: #1a2b3c;
+  margin-bottom: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+}
+
+.header h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: #e74c3c;
+}
+
+.subtitle {
+  color: #3c3c3c;
+  font-size: 1.2rem;
+  font-family: 'Lora', serif;
+  font-style: italic;
+  opacity: 0.8;
+  margin-top: 25px;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px;
+  color: #e74c3c;
+  font-size: 1.2rem;
+  font-family: 'Merriweather', serif;
+}
+
+.giftsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 35px;
+  padding: 20px 0;
+}
+
+.giftCard {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(26, 43, 60, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #e8e4e1;
+  position: relative;
+}
+
+.giftCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(26, 43, 60, 0.12);
+  border-color: #e74c3c;
+}
+
+.giftCard::before {
+  content: '🎁';
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 1.5rem;
+  opacity: 0.8;
+}
+
+.giftBadge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: rgba(231, 76, 60, 0.9);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: 'Baskervville', serif;
+  z-index: 1;
+}
+
+.imageContainer {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  background: #f8f5f2;
+}
+
+.imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.giftCard:hover .imageContainer img {
+  transform: scale(1.03);
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e74c3c;
+  font-family: 'Merriweather', serif;
+  font-size: 1.1rem;
+}
+
+.giftInfo {
+  padding: 20px;
+}
+
+.giftInfo h3 {
+  font-family: 'Merriweather', serif;
+  font-size: 1.3rem;
+  color: #1a2b3c;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.description {
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  font-family: 'Baskervville', serif;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recipient {
+  color: #a68a64;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  font-family: 'Lora', serif;
+  display: flex;
+  align-items: center;
+}
+
+.recipient::before {
+  content: '🎯';
+  margin-right: 8px;
+  font-size: 0.9rem;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.price {
+  font-family: 'Merriweather', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.originalPrice {
+  font-size: 1rem;
+  color: #888;
+  text-decoration: line-through;
+  font-family: 'Baskervville', serif;
+}
+
+.addToCartBtn {
+  width: calc(100% - 40px);
+  margin: 0 20px 20px;
+  padding: 12px;
+  background: #e74c3c;
+  color: #f8f5f2;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Merriweather', serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.addToCartBtn:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* Gift Sets section */
+.giftSetsSection {
+  margin-top: 80px;
+}
+
+.giftSetsSection h2 {
+  text-align: center;
+  font-family: 'Merriweather', serif;
+  font-size: 2.2rem;
+  color: #1a2b3c;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.giftSetsSection h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 2px;
+  background: #a68a64;
+}
+
+.giftSetsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 40px;
+}
+
+.giftSetCard {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  border: 2px solid #f0ebe5;
+}
+
+.giftSetHeader {
+  background: #2c3e50;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.giftSetHeader h3 {
+  font-family: 'Merriweather', serif;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.giftSetHeader p {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.giftSetContent {
+  padding: 25px;
+}
+
+.giftSetItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0ebe5;
+}
+
+.giftSetItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.giftSetItem img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 15px;
+}
+
+.giftSetItemInfo h4 {
+  font-family: 'Merriweather', serif;
+  font-size: 1rem;
+  color: #1a2b3c;
+  margin-bottom: 5px;
+}
+
+.giftSetItemInfo p {
+  font-family: 'Baskervville', serif;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.giftSetPrice {
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid #f0ebe5;
+}
+
+.giftSetPrice .price {
+  font-size: 1.8rem;
+  color: #e74c3c;
+}
+
+.giftSetBtn {
+  width: 100%;
+  padding: 15px;
+  background: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Merriweather', serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.giftSetBtn:hover {
+  background: #1a2b3c;
+}
+
+@media (max-width: 768px) {
+  .giftsPage {
+    padding: 40px 15px;
+  }
+  
+  .header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .giftsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+  }
+  
+  .imageContainer {
+    height: 250px;
+  }
+  
+  .giftSetsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* src/pages/Gifts/Gifts.module.css (Additional styles) */
+/* ... previous styles ... */
+
+/* Gift Guide */
+.giftGuide {
+  margin-top: 80px;
+  padding: 40px;
+  background: linear-gradient(135deg, #f0ebe5 0%, #e8e4e1 100%);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.giftGuide h3 {
+  font-family: 'Merriweather', serif;
+  font-size: 2rem;
+  color: #1a2b3c;
+  margin-bottom: 30px;
+}
+
+.giftTips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.tip {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.tip:hover {
+  transform: translateY(-5px);
+}
+
+.tip h4 {
+  font-family: 'Merriweather', serif;
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.tip p {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-family: 'Baskervville', serif;
+}
+
+/* No products/No gifts */
+.noProducts,
+.noGifts {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.noProducts p,
+.noGifts p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 20px;
+  font-family: 'Merriweather', serif;
+}
+
+.viewAllBtn,
+.shopLink {
+  display: inline-block;
+  background: #1a2b3c;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: 'Merriweather', serif;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.viewAllBtn:hover,
+.shopLink:hover {
+  background: #2c3e50;
+  transform: translateY(-2px);
+}

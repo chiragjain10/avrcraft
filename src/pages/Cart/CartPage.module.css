@@ -39,12 +39,12 @@
 }
 
 .backButton:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
 }
 
 .cartTitle {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -79,11 +79,11 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .authRequired h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.75rem;
   color: #1a2b3c;
   margin: 0 0 1rem 0;
@@ -115,7 +115,7 @@
 }
 
 .loginButton:hover {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
 }
 
@@ -133,8 +133,8 @@
 }
 
 .registerButton:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
 }
 
 /* Empty Cart State */
@@ -156,11 +156,11 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .emptyCart h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.75rem;
   color: #1a2b3c;
   margin: 0 0 1rem 0;
@@ -194,7 +194,7 @@
 }
 
 .continueShopping:hover {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
 }
 
@@ -212,8 +212,8 @@
 }
 
 .browseCategories:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
 }
 
 /* Suggestions */
@@ -223,7 +223,7 @@
 }
 
 .suggestions h3 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.25rem;
   color: #1a2b3c;
   margin: 0 0 1.5rem 0;
@@ -272,9 +272,9 @@
 }
 
 .suggestionPrice {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 0.9rem;
-  color: #c9a96e;
+  color: #2c3e50;
   font-weight: 600;
 }
 
@@ -305,7 +305,7 @@
 }
 
 .itemsHeader h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.25rem;
   color: #1a2b3c;
   margin: 0;
@@ -382,7 +382,7 @@
 }
 
 .itemName {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
   color: #1a2b3c;
@@ -392,7 +392,7 @@
 }
 
 .itemPrice {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -402,7 +402,7 @@
 .artisanInfo {
   font-family: 'Lora', serif;
   font-size: 0.9rem;
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .itemAttributes {
@@ -441,7 +441,7 @@
 }
 
 .wishlistAction {
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .wishlistAction:hover {
@@ -577,7 +577,7 @@
 }
 
 .summaryTitle {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -641,7 +641,7 @@
 
 .promoField:focus {
   outline: none;
-  border-color: #c9a96e;
+  border-color: #2c3e50;
   box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
 }
 
@@ -660,7 +660,7 @@
 }
 
 .applyPromo:hover {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
 }
 
@@ -670,7 +670,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
   border: none;
   border-radius: 8px;
@@ -721,8 +721,8 @@
 }
 
 .continueButton:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
 }
 
 .savingsNotice {

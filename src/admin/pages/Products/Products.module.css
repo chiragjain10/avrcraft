@@ -20,7 +20,7 @@
   font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 700;
-  color: var(--admin-primary);
+  color: var(--admin-accent);
   margin: 0 0 0.5rem 0;
   line-height: 1.2;
 }
@@ -44,7 +44,7 @@
   align-items: center;
   gap: 0.5rem;
   background: var(--admin-accent);
-  color: var(--admin-primary);
+  color: #ffffff;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -194,7 +194,7 @@
 
 .bulkActionButton:hover:not(:disabled) {
   background: var(--admin-accent);
-  color: var(--admin-primary);
+  color: #ffffff;
 }
 
 .bulkActionButton:disabled {
@@ -298,7 +298,7 @@
   font-family: var(--font-heading);
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--admin-primary);
+  color: #ffffff;
 }
 
 .originalPrice {
@@ -381,7 +381,7 @@
 .actionButton:hover {
   background: var(--admin-primary);
   color: white;
-  border-color: var(--admin-primary);
+  border-color: #ffffff;
   transform: scale(1.05);
 }
 

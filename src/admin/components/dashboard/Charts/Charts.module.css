@@ -22,7 +22,7 @@
   font-family: var(--font-heading);
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--admin-primary);
+  color: var(--admin-accent);
   margin: 0;
 }
 
@@ -86,7 +86,7 @@
 .downloadButton:hover {
   background: var(--admin-primary);
   color: white;
-  border-color: var(--admin-primary);
+  border-color: #ffffff;
 }
 
 .chartsContent {
@@ -257,7 +257,7 @@
   font-family: var(--font-heading);
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--admin-primary);
+  color: #ffffff;
 }
 
 /* Stats Grid */
@@ -307,7 +307,7 @@
   font-family: var(--font-heading);
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--admin-primary);
+  color: #ffffff;
   line-height: 1.2;
   margin-bottom: 0.25rem;
 }

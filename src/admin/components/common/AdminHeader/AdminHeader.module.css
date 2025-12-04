@@ -281,7 +281,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--admin-primary);
+  color: #ffffff;
   font-weight: 600;
   font-size: 0.8rem;
   overflow: hidden;
@@ -329,7 +329,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--admin-primary);
+  color: #ffffff;
   font-weight: 600;
   font-size: 1rem;
   overflow: hidden;

@@ -1,0 +1,180 @@
+/* src/pages/Artisans/Artisans.module.css */
+.artisansPage {
+  padding: 60px 20px;
+  min-height: 70vh;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.artisansPage h1 {
+  font-size: 2.8rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  text-align: center;
+  font-family: "Georgia", serif;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 50px;
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.artisansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.artisanCard {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.artisanCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.imageContainer {
+  height: 250px;
+  overflow: hidden;
+}
+
+.imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.artisanCard:hover .imageContainer img {
+  transform: scale(1.05);
+}
+
+.artisanInfo {
+  padding: 25px;
+}
+
+.artisanInfo h2 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.skill {
+  color: #e74c3c;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.location,
+.experience {
+  color: #666;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.location::before,
+.experience::before {
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+.description {
+  color: #555;
+  margin: 20px 0;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.viewProducts {
+  width: 100%;
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 15px;
+}
+
+.viewProducts:hover {
+  background: #2980b9;
+}
+
+.joinSection {
+  text-align: center;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  padding: 50px 30px;
+  border-radius: 16px;
+  margin-top: 40px;
+}
+
+.joinSection h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.joinSection p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+  opacity: 0.9;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.joinBtn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.joinBtn:hover {
+  background: #c0392b;
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .artisansGrid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .artisansPage h1 {
+    font-size: 2.2rem;
+  }
+  
+  .joinSection {
+    padding: 40px 20px;
+  }
+  
+  .joinSection h2 {
+    font-size: 1.8rem;
+  }
+}

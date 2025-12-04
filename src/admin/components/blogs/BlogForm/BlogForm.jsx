@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Upload, X } from 'lucide-react'
+import { adminBlogs } from '../../../utils/firebase/adminConfig'
 import styles from './BlogForm.module.css'
 
 const BlogForm = ({ blog, onSave, onCancel }) => {
@@ -12,6 +13,7 @@ const BlogForm = ({ blog, onSave, onCancel }) => {
     tags: []
   })
   const [featuredImage, setFeaturedImage] = useState('')
+  const [imageFile, setImageFile] = useState(null) // Store actual file for upload
   const [uploading, setUploading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [newTag, setNewTag] = useState('')
@@ -26,7 +28,7 @@ const BlogForm = ({ blog, onSave, onCancel }) => {
         isActive: blog.isActive !== undefined ? blog.isActive : true,
         tags: blog.tags || []
       })
-      setFeaturedImage(blog.featuredImage || '')
+      setFeaturedImage(blog.featuredImage || blog.image || '')
     }
   }, [blog])
 
@@ -44,12 +46,15 @@ const BlogForm = ({ blog, onSave, onCancel }) => {
 
     setUploading(true)
     try {
-      // In a real app, you would upload to Firebase Storage
-      const imageUrl = URL.createObjectURL(file) // Temporary URL for demo
+      // Store file for later upload to Cloudinary
+      setImageFile(file)
+      
+      // Create temporary URL for preview
+      const imageUrl = URL.createObjectURL(file)
       setFeaturedImage(imageUrl)
     } catch (error) {
-      console.error('Error uploading image:', error)
-      alert('Failed to upload image')
+      console.error('Error processing image:', error)
+      alert('Failed to process image')
     } finally {
       setUploading(false)
     }
@@ -57,6 +62,7 @@ const BlogForm = ({ blog, onSave, onCancel }) => {
 
   const removeImage = () => {
     setFeaturedImage('')
+    setImageFile(null)
   }
 
   const addTag = () => {
@@ -78,17 +84,29 @@ const BlogForm = ({ blog, onSave, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    if (!formData.title.trim() || !formData.content.trim()) {
+      alert('Please fill title and content fields')
+      return
+    }
+
     setLoading(true)
 
     try {
-      const blogData = {
-        ...formData,
-        featuredImage: featuredImage
+      let blogData = { ...formData }
+
+      // If new image is selected, it will be handled by adminBlogs
+      if (imageFile) {
+        blogData.imageFile = imageFile
+      } else if (featuredImage) {
+        // If existing image (URL), keep it
+        blogData.image = featuredImage
       }
 
       await onSave(blogData)
     } catch (error) {
       console.error('Error saving blog:', error)
+      alert('Failed to save blog post')
     } finally {
       setLoading(false)
     }
@@ -167,6 +185,7 @@ const BlogForm = ({ blog, onSave, onCancel }) => {
                     type="button"
                     onClick={removeImage}
                     className={styles.removeImageButton}
+                    disabled={uploading}
                   >
                     <X size={16} />
                   </button>
@@ -176,7 +195,7 @@ const BlogForm = ({ blog, onSave, onCancel }) => {
                 </p>
               </div>
             )}
-            {uploading && <span className={styles.uploadingText}>Uploading...</span>}
+            {uploading && <span className={styles.uploadingText}>Processing image...</span>}
           </div>
         </div>
 
@@ -263,14 +282,14 @@ const BlogForm = ({ blog, onSave, onCancel }) => {
           type="button"
           onClick={onCancel}
           className={styles.cancelButton}
-          disabled={loading}
+          disabled={loading || uploading}
         >
           Cancel
         </button>
         <button
           type="submit"
           className={styles.saveButton}
-          disabled={loading}
+          disabled={loading || uploading}
         >
           {loading ? 'Saving...' : blog ? 'Update Blog Post' : 'Publish Blog Post'}
         </button>

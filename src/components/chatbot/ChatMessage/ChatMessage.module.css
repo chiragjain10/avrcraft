@@ -15,7 +15,7 @@
 .botAvatar {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  background: #2c3e50;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -95,5 +95,5 @@
 }
 
 .userMessage .messageTime {
-  color: #c9a96e;
+  color: #2c3e50;
 }

@@ -1,0 +1,133 @@
+/* src/pages/Help/Help.module.css */
+.helpPage {
+  padding: 60px 20px;
+  min-height: 70vh;
+  background: #fafafa;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.helpPage h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  text-align: center;
+  font-family: "Georgia", serif;
+}
+
+.subtitle {
+  color: #666;
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 1.1rem;
+}
+
+.contactInfo {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  margin-bottom: 50px;
+  border-left: 4px solid #3498db;
+}
+
+.contactInfo h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.contactInfo p {
+  color: #555;
+  margin: 10px 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.contactInfo p::before {
+  content: "•";
+  color: #3498db;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.faqSection {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.faqSection h2 {
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.faqItem {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 25px;
+  transition: transform 0.2s ease;
+}
+
+.faqItem:hover {
+  transform: translateX(5px);
+}
+
+.faqItem h3 {
+  color: #2c3e50;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+}
+
+.faqItem h3::before {
+  content: "Q.";
+  color: #e74c3c;
+  font-weight: bold;
+  margin-right: 10px;
+  font-size: 1.1rem;
+}
+
+.faqItem p {
+  color: #555;
+  line-height: 1.7;
+  font-size: 1rem;
+  margin-left: 30px;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 3px solid #2ecc71;
+}
+
+@media (max-width: 768px) {
+  .helpPage {
+    padding: 40px 15px;
+  }
+  
+  .helpPage h1 {
+    font-size: 2rem;
+  }
+  
+  .contactInfo,
+  .faqSection {
+    padding: 20px;
+  }
+  
+  .faqItem p {
+    margin-left: 20px;
+  }
+}

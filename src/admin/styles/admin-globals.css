@@ -3,9 +3,9 @@
   /* Colors */
   --admin-primary: #1a2b3c;
   --admin-secondary: #2d5a4d;
-  --admin-accent: #c9a96e;
+  --admin-accent: #2c3e50;
   --admin-bg: #f8f9fa;
-  --admin-card: #ffffff;
+  --admin-card: color: #ffffff;;
   --admin-text: #2c3e50;
   --admin-text-light: #6c757d;
   --admin-border: #e1e8ed;
@@ -15,7 +15,7 @@
   --admin-info: #3498db;
   
   /* Typography */
-  --font-heading: 'Merriweather', serif;
+  --font-heading: "Source Sans Pro", Arial, sans-serif;
   --font-body: 'Baskerville', serif;
   --font-accent: 'Lora', serif;
   
@@ -58,7 +58,7 @@
 .admin-heading {
   font-family: var(--font-heading);
   font-weight: 700;
-  color: var(--admin-primary);
+  color: #ffffff;
 }
 
 .admin-subheading {

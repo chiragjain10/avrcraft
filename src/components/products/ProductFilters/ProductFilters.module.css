@@ -31,7 +31,7 @@
 }
 
 .filterHeader:hover {
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .filterOptions {
@@ -80,8 +80,8 @@
 }
 
 .filterCheckbox:checked + .checkboxCustom {
-  background: #c9a96e;
-  border-color: #c9a96e;
+  background: #2c3e50;
+  border-color: #2c3e50;
 }
 
 .filterCheckbox:checked + .checkboxCustom::after {
@@ -96,8 +96,8 @@
 }
 
 .filterRadio:checked + .radioCustom {
-  background: #c9a96e;
-  border-color: #c9a96e;
+  background: #2c3e50;
+  border-color: #2c3e50;
 }
 
 .filterRadio:checked + .radioCustom::after {
@@ -154,7 +154,7 @@
 
 .priceField:focus {
   outline: none;
-  border-color: #c9a96e;
+  border-color: #2c3e50;
   box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
 }
 
@@ -178,13 +178,13 @@
 }
 
 .pricePreset:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
 }
 
 .pricePreset.active {
-  background: #c9a96e;
-  border-color: #c9a96e;
+  background: #2c3e50;
+  border-color: #2c3e50;
   color: #1a2b3c;
   font-weight: 500;
 }
@@ -197,7 +197,7 @@
 }
 
 .starFilled {
-  color: #c9a96e;
+  color: #2c3e50;
   font-size: 0.9rem;
 }
 
@@ -227,7 +227,7 @@
 }
 
 .filterOptions::-webkit-scrollbar-thumb:hover {
-  background: #c9a96e;
+  background: #2c3e50;
 }
 
 @media (max-width: 480px) {

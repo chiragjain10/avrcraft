@@ -1,109 +1,53 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ChevronDown } from 'lucide-react'
 import styles from './Header.module.css'
 
-const Navbar = () => {
+const navigationItems = [
+  { id: 'bestsellers', name: 'BESTSELLERS', path: '/bestsellers' },
+  { id: 'fiction', name: 'FICTION', path: '/fiction' },
+  { id: 'non-fiction', name: 'NON-FICTION', path: '/non-fiction' },
+  { id: 'childrens', name: "CHILDREN'S BOOKS", path: '/childrens' },
+  { id: 'stationery', name: 'STATIONERY', path: '/stationery' },
+  { id: 'gifts', name: 'GIFTS', path: '/gifts' }
+]
+
+const Navigation = () => {
   const [activeDropdown, setActiveDropdown] = useState(null)
   const location = useLocation()
 
-  const categories = [
-    { name: 'Traditional Paintings', path: '/shop?category=paintings' },
-    { name: 'Handmade Jewelry', path: '/shop?category=jewelry' },
-    { name: 'Spiritual Decor', path: '/shop?category=decor' },
-    { name: 'Home & Living', path: '/shop?category=home' },
-  ]
-
-  const isActiveLink = (path) => {
-    if (path === '/') {
-      return location.pathname === '/'
-    }
-    return location.pathname.startsWith(path)
-  }
+  const isActiveLink = (path) => location.pathname === path
 
   return (
-    <nav className={styles.nav}>
-      <Link 
-        to="/" 
-        className={`${styles.navLink} ${isActiveLink('/') ? styles.active : ''}`}
-      >
-        Home
-      </Link>
-      
-      {/* Shop with Dropdown */}
-      <div 
-        className={styles.dropdown}
-        onMouseEnter={() => setActiveDropdown('shop')}
-        onMouseLeave={() => setActiveDropdown(null)}
-      >
-        <button className={`${styles.navLink} ${styles.dropdownToggle} ${isActiveLink('/shop') ? styles.active : ''}`}>
-          Shop <ChevronDown size={16} />
-        </button>
-        
-        {activeDropdown === 'shop' && (
-          <div className={styles.dropdownMenu}>
-            <Link to="/shop" className={styles.dropdownItem}>
-              All Products
+    <nav className={styles.navigation} aria-label="Secondary navigation">
+      <div className={styles.navContainer}>
+        {navigationItems.map(item => (
+          <div
+            key={item.id}
+            className={styles.navItem}
+            onMouseEnter={() => setActiveDropdown(item.id)}
+            onMouseLeave={() => setActiveDropdown(null)}
+          >
+            <Link
+              to={item.path}
+              className={`${styles.navLink} ${isActiveLink(item.path) ? styles.active : ''}`}
+            >
+              {item.name}
             </Link>
-            <div className={styles.dropdownDivider}></div>
-            {categories.map((category, index) => (
-              <Link 
-                key={index}
-                to={category.path} 
-                className={styles.dropdownItem}
-              >
-                {category.name}
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
 
-      <Link 
-        to="/about" 
-        className={`${styles.navLink} ${isActiveLink('/about') ? styles.active : ''}`}
-      >
-        About
-      </Link>
-      
-      <Link 
-        to="/contact" 
-        className={`${styles.navLink} ${isActiveLink('/contact') ? styles.active : ''}`}
-      >
-        Contact
-      </Link>
-
-      {/* Artisan Collections */}
-      <div 
-        className={styles.dropdown}
-        onMouseEnter={() => setActiveDropdown('artisan')}
-        onMouseLeave={() => setActiveDropdown(null)}
-      >
-        <button className={`${styles.navLink} ${styles.dropdownToggle}`}>
-          Artisan Collections <ChevronDown size={16} />
-        </button>
-        
-        {activeDropdown === 'artisan' && (
-          <div className={styles.dropdownMenu}>
-            <Link to="/artisans" className={styles.dropdownItem}>
-              Featured Artisans
-            </Link>
-            <Link to="/techniques" className={styles.dropdownItem}>
-              Traditional Techniques
-            </Link>
-            <div className={styles.dropdownDivider}></div>
-            <span className={styles.dropdownLabel}>Eco-friendly Textiles</span>
-            <Link to="/collections/3d" className={styles.dropdownItem}>
-              3D Collections
-            </Link>
-            <Link to="/collections/winners" className={styles.dropdownItem}>
-              Award Winners
-            </Link>
+            {activeDropdown === item.id && (
+              <div className={styles.dropdown}>
+                <div className={styles.dropdownContent}>
+                  <Link to={`${item.path}/featured`} className={styles.dropdownLink}>Featured</Link>
+                  <Link to={`${item.path}/new`} className={styles.dropdownLink}>New Releases</Link>
+                  <Link to={`${item.path}/bestsellers`} className={styles.dropdownLink}>Bestsellers</Link>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        ))}
       </div>
     </nav>
   )
 }
 
-export default Navbar
+export default Navigation

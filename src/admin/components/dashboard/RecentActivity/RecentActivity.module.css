@@ -16,7 +16,7 @@
   font-family: var(--font-heading);
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--admin-primary);
+  color: var(--admin-accent);
   margin: 0;
 }
 
@@ -35,7 +35,7 @@
 
 .viewAllButton:hover {
   background: var(--admin-bg);
-  color: var(--admin-primary);
+  color: #ffffff;
 }
 
 .activityList {
@@ -177,7 +177,7 @@
   font-family: var(--font-heading);
   font-size: 1rem;
   font-weight: 600;
-  color: var(--admin-primary);
+  color: #ffffff;
   margin: 0 0 1rem 0;
 }
 

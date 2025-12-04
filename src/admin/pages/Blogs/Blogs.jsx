@@ -48,7 +48,8 @@ const Blogs = () => {
   const filteredBlogs = blogs.filter(blog =>
     blog.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     blog.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    blog.author?.toLowerCase().includes(searchQuery.toLowerCase())
+    blog.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    blog.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   )
 
   const handleAddBlog = () => {
@@ -62,7 +63,7 @@ const Blogs = () => {
   }
 
   const handleDeleteBlog = async (blogId) => {
-    if (!window.confirm('Are you sure you want to delete this blog post?')) return
+    if (!window.confirm('Are you sure you want to delete this blog post? This action cannot be undone.')) return
 
     try {
       await adminBlogs.deleteBlog(blogId)
@@ -85,9 +86,18 @@ const Blogs = () => {
       if (editingBlog) {
         // Update existing blog
         await adminBlogs.updateBlog(editingBlog.id, blogData)
+        
+        // Update local state
         setBlogs(blogs.map(b => 
-          b.id === editingBlog.id ? { ...b, ...blogData } : b
+          b.id === editingBlog.id ? { 
+            ...b, 
+            ...blogData,
+            // Preserve existing values if not provided
+            image: blogData.image || b.image,
+            featuredImage: blogData.image || b.featuredImage
+          } : b
         ))
+        
         addNotification({
           type: 'success',
           message: 'Blog post updated successfully'
@@ -106,19 +116,35 @@ const Blogs = () => {
       console.error('Error saving blog:', error)
       addNotification({
         type: 'error',
-        message: `Failed to ${editingBlog ? 'update' : 'publish'} blog post`
+        message: `Failed to ${editingBlog ? 'update' : 'publish'} blog post: ${error.message}`
       })
+      throw error // Re-throw to handle in form
     }
   }
 
   const formatDate = (timestamp) => {
     if (!timestamp) return 'N/A'
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp)
-    return date.toLocaleDateString('en-IN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
+    try {
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp)
+      return date.toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
+    } catch (error) {
+      return 'Invalid Date'
+    }
+  }
+
+  const handleViewBlog = (blog) => {
+    // In a real app, this would navigate to the blog post
+    // For now, we'll just show an alert
+    alert(`Viewing blog: ${blog.title}\n\nThis would open the blog post in a new tab in a real application.`)
+  }
+
+  const truncateText = (text, maxLength = 100) => {
+    if (!text) return ''
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
   }
 
   const columns = [
@@ -127,14 +153,28 @@ const Blogs = () => {
       label: 'Blog Post',
       render: (blog) => (
         <div className={styles.blogInfo}>
-          <div className={styles.blogIcon}>
-            <FileText size={20} />
-          </div>
-          <div>
+          {blog.image && (
+            <div className={styles.blogImage}>
+              <img src={blog.image} alt={blog.title} />
+            </div>
+          )}
+          <div className={styles.blogContent}>
             <h4 className={styles.blogTitle}>{blog.title}</h4>
             <p className={styles.blogExcerpt}>
-              {blog.excerpt || blog.content?.substring(0, 100)}...
+              {blog.excerpt ? truncateText(blog.excerpt, 120) : truncateText(blog.content, 120)}
             </p>
+            {blog.tags && blog.tags.length > 0 && (
+              <div className={styles.blogTags}>
+                {blog.tags.slice(0, 3).map((tag, index) => (
+                  <span key={index} className={styles.blogTag}>
+                    #{tag}
+                  </span>
+                ))}
+                {blog.tags.length > 3 && (
+                  <span className={styles.moreTags}>+{blog.tags.length - 3} more</span>
+                )}
+              </div>
+            )}
           </div>
         </div>
       ),
@@ -166,7 +206,10 @@ const Blogs = () => {
       key: 'views',
       label: 'Views',
       render: (blog) => (
-        <span className={styles.viewsCount}>{blog.views || 0}</span>
+        <div className={styles.viewsCount}>
+          <Eye size={14} />
+          <span>{blog.views || 0}</span>
+        </div>
       ),
       sortable: true
     },
@@ -188,6 +231,7 @@ const Blogs = () => {
         <div className={styles.actions}>
           <button 
             className={styles.actionButton}
+            onClick={() => handleViewBlog(blog)}
             title="View blog post"
           >
             <Eye size={16} />
@@ -234,13 +278,42 @@ const Blogs = () => {
         </div>
       </div>
 
+      {/* Stats Summary */}
+      <div className={styles.statsSummary}>
+        <div className={styles.statCard}>
+          <FileText size={24} className={styles.statIcon} />
+          <div className={styles.statInfo}>
+            <h3 className={styles.statNumber}>{blogs.length}</h3>
+            <p className={styles.statLabel}>Total Posts</p>
+          </div>
+        </div>
+        <div className={styles.statCard}>
+          <Eye size={24} className={styles.statIcon} />
+          <div className={styles.statInfo}>
+            <h3 className={styles.statNumber}>
+              {blogs.reduce((total, blog) => total + (blog.views || 0), 0)}
+            </h3>
+            <p className={styles.statLabel}>Total Views</p>
+          </div>
+        </div>
+        <div className={styles.statCard}>
+          <Calendar size={24} className={styles.statIcon} />
+          <div className={styles.statInfo}>
+            <h3 className={styles.statNumber}>
+              {blogs.filter(blog => blog.isActive).length}
+            </h3>
+            <p className={styles.statLabel}>Published</p>
+          </div>
+        </div>
+      </div>
+
       {/* Search */}
       <div className={styles.filtersSection}>
         <div className={styles.searchBox}>
           <Search size={18} className={styles.searchIcon} />
           <input
             type="text"
-            placeholder="Search blog posts..."
+            placeholder="Search blog posts by title, content, author, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className={styles.searchInput}
@@ -254,7 +327,11 @@ const Blogs = () => {
           columns={columns}
           data={filteredBlogs}
           loading={loading}
-          emptyMessage="No blog posts found. Write your first blog post to get started."
+          emptyMessage={
+            blogs.length === 0 
+              ? "No blog posts found. Write your first blog post to get started." 
+              : "No blog posts match your search criteria."
+          }
           keyExtractor={(blog) => blog.id}
         />
       </div>

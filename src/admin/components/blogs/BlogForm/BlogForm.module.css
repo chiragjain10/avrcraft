@@ -25,7 +25,7 @@
   font-family: var(--font-heading);
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--admin-primary);
+  color: var(--admin-accent);
   margin: 0 0 1.5rem 0;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--admin-border);
@@ -203,7 +203,7 @@
 .addTagButton {
   padding: 0.75rem 1rem;
   background: var(--admin-accent);
-  color: var(--admin-primary);
+  color: #ffffff;
   border: none;
   border-radius: 6px;
   font-family: var(--font-body);
@@ -309,7 +309,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: var(--admin-primary);
+  color: #ffffff;
   font-size: 12px;
   font-weight: bold;
 }
@@ -344,7 +344,7 @@
 .saveButton {
   padding: 0.75rem 2rem;
   background: var(--admin-accent);
-  color: var(--admin-primary);
+  color: #ffffff;
   border: none;
   border-radius: 8px;
   font-family: var(--font-body);

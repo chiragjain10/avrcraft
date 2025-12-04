@@ -23,17 +23,17 @@
 }
 
 .logo {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #c9a96e;
+  color: #2c3e50;
   text-decoration: none;
   display: inline-block;
   margin-bottom: 1.5rem;
 }
 
 .authTitle {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -105,7 +105,7 @@
 
 .formInput:focus {
   outline: none;
-  border-color: #c9a96e;
+  border-color: #2c3e50;
   box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
 }
 
@@ -159,14 +159,14 @@
 }
 
 input[type="checkbox"]:checked + .checkboxCustom {
-  background: #c9a96e;
-  border-color: #c9a96e;
+  background: #2c3e50;
+  border-color: #2c3e50;
 }
 
 .forgotLink {
   font-family: 'Lora', serif;
   font-size: 0.9rem;
-  color: #c9a96e;
+  color: #2c3e50;
   text-decoration: none;
   transition: all 0.2s ease;
 }
@@ -195,7 +195,7 @@ input[type="checkbox"]:checked + .checkboxCustom {
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
   transform: translateY(-2px);
 }
@@ -236,7 +236,7 @@ input[type="checkbox"]:checked + .checkboxCustom {
 }
 
 .footerLink {
-  color: #c9a96e;
+  color: #2c3e50;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -352,7 +352,7 @@ input[type="checkbox"]:checked + .checkboxCustom {
 }
 
 .termsLink {
-  color: #c9a96e;
+  color: #2c3e50;
   text-decoration: none;
   font-weight: 500;
   margin: 0 0.25rem;

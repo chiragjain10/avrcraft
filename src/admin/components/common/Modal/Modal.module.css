@@ -23,7 +23,7 @@
 }
 
 .modal {
-  background: var(--admin-card);
+  background: #ffffff;
   border-radius: 12px;
   box-shadow: var(--shadow-xl);
   animation: slideUp 0.2s ease-out;
@@ -82,7 +82,7 @@
   font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--admin-primary);
+  color: var(--admin-accent);
   margin: 0;
   line-height: 1.2;
 }

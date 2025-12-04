@@ -1,19 +1,22 @@
+// src/hooks/useProducts.js (Improved)
 import { useState, useEffect } from 'react'
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore'
+import { 
+  collection, 
+  getDocs, 
+  query, 
+  where, 
+  orderBy,
+  limit 
+} from 'firebase/firestore'
 import { db } from '../utils/firebase/config'
 
-export const useProducts = (filters = {}) => {
+export const useProducts = (filters = {}, searchQuery = '') => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
-      if (!filters) {
-        setLoading(false)
-        return
-      }
-
       setLoading(true)
       setError(null)
 
@@ -23,19 +26,27 @@ export const useProducts = (filters = {}) => {
           where('isActive', '==', true)
         )
 
-        // 🔹 Price range ho to Firestore pe
+        // 🔹 Search functionality
+        if (searchQuery && searchQuery.trim() !== '') {
+          // Note: Firestore doesn't support full-text search natively
+          // We'll filter client-side for search
+          productsQuery = query(productsQuery, orderBy('name'))
+        }
+
+        // 🔹 Price range filter
         if (filters.priceRange) {
           productsQuery = query(
             productsQuery,
             where('price', '>=', Number(filters.priceRange[0])),
             where('price', '<=', Number(filters.priceRange[1])),
-            orderBy('price') // range field par hi orderBy
+            orderBy('price')
           )
         } else {
-          // 🔹 Default sort
+          // Default sort
           productsQuery = query(productsQuery, orderBy('createdAt', 'desc'))
         }
 
+        // 🔹 Category filter
         if (filters.category) {
           productsQuery = query(
             productsQuery,
@@ -43,10 +54,27 @@ export const useProducts = (filters = {}) => {
           )
         }
 
+        // 🔹 Bestseller filter
         if (filters.isBestseller) {
           productsQuery = query(
             productsQuery,
             where('isBestseller', '==', true)
+          )
+        }
+
+        // 🔹 Artisan filter
+        if (filters.artisan) {
+          productsQuery = query(
+            productsQuery,
+            where('artisan.name', '==', filters.artisan)
+          )
+        }
+
+        // 🔹 Material filter
+        if (filters.material) {
+          productsQuery = query(
+            productsQuery,
+            where('material', '==', filters.material)
           )
         }
 
@@ -56,9 +84,20 @@ export const useProducts = (filters = {}) => {
           ...doc.data()
         }))
 
-        // 🔹 Client-side filters
+        // 🔹 Client-side search (since Firestore doesn't support full-text search)
+        if (searchQuery && searchQuery.trim() !== '') {
+          const query = searchQuery.toLowerCase().trim()
+          productsList = productsList.filter(product => 
+            product.name?.toLowerCase().includes(query) ||
+            product.description?.toLowerCase().includes(query) ||
+            product.category?.toLowerCase().includes(query) ||
+            product.material?.toLowerCase().includes(query) ||
+            product.artisan?.name?.toLowerCase().includes(query) ||
+            product.tags?.some(tag => tag.toLowerCase().includes(query))
+          )
+        }
 
-        // availability
+        // 🔹 Client-side availability filter
         if (filters.availability && filters.availability !== 'all') {
           productsList = productsList.filter(product => {
             if (filters.availability === 'in-stock') {
@@ -70,7 +109,7 @@ export const useProducts = (filters = {}) => {
           })
         }
 
-        // rating (client-side)
+        // 🔹 Client-side rating filter
         if (filters.rating && filters.rating > 0) {
           productsList = productsList.filter(
             product => (product.rating || 0) >= filters.rating
@@ -79,8 +118,8 @@ export const useProducts = (filters = {}) => {
 
         setProducts(productsList)
       } catch (err) {
-        setError('Failed to load products')
         console.error('Error fetching products:', err)
+        setError('Failed to load products. Please try again.')
         setProducts([])
       } finally {
         setLoading(false)
@@ -88,7 +127,58 @@ export const useProducts = (filters = {}) => {
     }
 
     fetchProducts()
-  }, [filters])
+  }, [filters, searchQuery])
 
   return { products, loading, error }
+}
+
+// Additional hook for search suggestions
+export const useSearchSuggestions = (searchQuery, limit = 5) => {
+  const [suggestions, setSuggestions] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (!searchQuery || searchQuery.length < 2) {
+        setSuggestions([])
+        return
+      }
+
+      setLoading(true)
+      try {
+        const productsQuery = query(
+          collection(db, 'products'),
+          where('isActive', '==', true),
+          orderBy('name'),
+          limit(10)
+        )
+
+        const querySnapshot = await getDocs(productsQuery)
+        const productsList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+
+        const queryLower = searchQuery.toLowerCase()
+        const filtered = productsList
+          .filter(product => 
+            product.name?.toLowerCase().includes(queryLower) ||
+            product.category?.toLowerCase().includes(queryLower)
+          )
+          .slice(0, limit)
+
+        setSuggestions(filtered)
+      } catch (error) {
+        console.error('Error fetching search suggestions:', error)
+        setSuggestions([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    const debounceTimer = setTimeout(fetchSuggestions, 300)
+    return () => clearTimeout(debounceTimer)
+  }, [searchQuery, limit])
+
+  return { suggestions, loading }
 }

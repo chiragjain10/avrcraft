@@ -2,7 +2,7 @@
   position: fixed;
   width: 8px;
   height: 8px;
-  background: #c9a96e;
+  background: #2c3e50;
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
@@ -14,7 +14,7 @@
   position: fixed;
   width: 40px;
   height: 40px;
-  border: 2px solid #c9a96e;
+  border: 2px solid #2c3e50;
   border-radius: 50%;
   pointer-events: none;
   z-index: 9998;

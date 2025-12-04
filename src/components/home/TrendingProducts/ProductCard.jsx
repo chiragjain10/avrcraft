@@ -1,229 +1,213 @@
-import React, { useState } from 'react'
-import { Star, Heart, ShoppingCart, Loader2 } from 'lucide-react'
-import { useCart } from '../../../contexts/CartContext'
-import { useAuth } from '../../../contexts/AuthContext'
-import { useWishlist } from '../../../contexts/WishlistContext'
-import { useNavigate } from 'react-router-dom'
-import { doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore'
-import { db } from '../../../utils/firebase/config'
-import styles from './TrendingProducts.module.css'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useCart } from '../../../contexts/CartContext';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useWishlist } from '../../../contexts/WishlistContext';
+import { Heart, ShoppingCart, Star } from 'lucide-react';
+import styles from './TrendingProducts.module.css';
 
 const ProductCard = ({ product }) => {
-  const [isAddingToCart, setIsAddingToCart] = useState(false)
-  const [isWishlistLoading, setIsWishlistLoading] = useState(false)
-  const { addToCart } = useCart()
-  const { user } = useAuth()
-  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist()
-  const navigate = useNavigate()
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
+  const { addToCart } = useCart();
+  const { user } = useAuth();
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
-  const isProductInWishlist = isInWishlist(product.id)
+  const isProductInWishlist = isInWishlist(product.id);
 
   const handleAddToCart = async (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
     
     if (!user) {
-      navigate('/login', { state: { from: `/product/${product.id}` } })
-      return
+      // Handle login redirect if needed
+      return;
     }
 
     try {
-      setIsAddingToCart(true)
+      setIsAddingToCart(true);
       
       const cartItem = {
         id: product.id,
-        name: product.name,
-        price: product.price,
+        name: product.title || product.name,
+        price: product.currentPrice || product.price,
         originalPrice: product.originalPrice,
-        imageUrl: product.imageUrl || product.images?.[0],
-        stock: product.stock || 10,
+        imageUrl: product.coverImage || product.imageUrl || product.images?.[0],
         quantity: 1,
-        category: product.category,
         author: product.author,
+        category: product.category,
         addedAt: new Date().toISOString()
-      }
+      };
 
-      await addToCart(cartItem)
+      await addToCart(cartItem);
       
     } catch (error) {
-      console.error('Error adding to cart:', error)
-      alert('Failed to add item to cart. Please try again.')
+      console.error('Error adding to cart:', error);
     } finally {
-      setIsAddingToCart(false)
+      setIsAddingToCart(false);
     }
-  }
+  };
 
   const handleWishlistToggle = async (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
     
     if (!user) {
-      navigate('/login', { state: { from: `/product/${product.id}` } })
-      return
+      // Handle login redirect if needed
+      return;
     }
 
     try {
-      setIsWishlistLoading(true)
+      setIsWishlistLoading(true);
       
       if (isProductInWishlist) {
-        await removeFromWishlist(product.id)
+        await removeFromWishlist(product.id);
       } else {
         await addToWishlist({
           id: product.id,
-          name: product.name,
-          price: product.price,
+          name: product.title || product.name,
+          price: product.currentPrice || product.price,
           originalPrice: product.originalPrice,
-          imageUrl: product.imageUrl || product.images?.[0],
-          category: product.category,
+          imageUrl: product.coverImage || product.imageUrl,
           author: product.author,
-          rating: product.rating,
+          category: product.category,
           addedAt: new Date().toISOString()
-        })
+        });
       }
       
     } catch (error) {
-      console.error('Error updating wishlist:', error)
-      alert('Failed to update wishlist. Please try again.')
+      console.error('Error updating wishlist:', error);
     } finally {
-      setIsWishlistLoading(false)
+      setIsWishlistLoading(false);
     }
-  }
+  };
 
-  const handleProductClick = () => {
-    navigate(`/product/${product.id}`)
-  }
-
+  // Format price with ₹ symbol
   const formatPrice = (price) => {
-    if (!price && price !== 0) return 'Price not available'
+    if (!price && price !== 0) return '₹0';
     
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(price)
-  }
+    // Remove decimal if .00
+    const formattedPrice = price.toFixed(2);
+    const priceWithoutDecimal = formattedPrice.endsWith('.00') 
+      ? formattedPrice.slice(0, -3) 
+      : formattedPrice;
+    
+    return `₹${priceWithoutDecimal}`;
+  };
 
-  // Calculate discount if original price is available
-  const discount = product.originalPrice && product.price 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0
+  // Calculate discount percentage
+  const discount = product.originalPrice && product.currentPrice 
+    ? Math.round(((product.originalPrice - product.currentPrice) / product.originalPrice) * 100)
+    : 0;
 
-  const isOutOfStock = product.stock === 0
+  // Calculate amount saved
+  const amountSaved = product.originalPrice && product.currentPrice 
+    ? product.originalPrice - product.currentPrice
+    : 0;
 
   return (
-    <div className={styles.productCard} onClick={handleProductClick}>
-      <div className={styles.cardImage}>
-        {/* Firebase image URL use karo */}
-        {product.imageUrl ? (
-          <img 
-            src={product.imageUrl} 
-            alt={product.name}
-            className={styles.productImage}
-            loading="lazy"
-          />
-        ) : (
-          <div className={styles.imagePlaceholder}>
-            <span>No Image</span>
-          </div>
-        )}
-        
-        {/* Badges - Firebase flags ke according */}
-        <div className={styles.cardBadges}>
-          {product.isBestseller && <span className={styles.bestsellerBadge}>BESTSELLER</span>}
-          {product.isNew && <span className={styles.newBadge}>New</span>}
-          {discount > 0 && <span className={styles.discountBadge}>{discount}% OFF</span>}
-          {isOutOfStock && <span className={styles.outOfStockBadge}>Out of Stock</span>}
-        </div>
-        
-        {/* Actions */}
-        <div className={styles.cardActions}>
+    <div className={styles.productCard}>
+      <Link to={`/product/${product.id}`} className={styles.productLink}>
+        <div className={styles.cardImage}>
+          {product.coverImage ? (
+            <img 
+              src={product.coverImage} 
+              alt={product.title || product.name}
+              className={styles.productImage}
+              loading="lazy"
+            />
+          ) : (
+            <div className={styles.imagePlaceholder}>
+              <span>No Image</span>
+            </div>
+          )}
+          
+          {/* Wishlist Button */}
           <button 
             className={`${styles.wishlistButton} ${isProductInWishlist ? styles.inWishlist : ''}`}
             onClick={handleWishlistToggle}
             disabled={isWishlistLoading}
+            aria-label={isProductInWishlist ? "Remove from wishlist" : "Add to wishlist"}
           >
-            {isWishlistLoading ? (
-              <Loader2 size={18} className={styles.spinner} />
-            ) : (
-              <Heart 
-                size={18} 
-                fill={isProductInWishlist ? "currentColor" : "none"}
-              />
-            )}
+            <Heart 
+              size={20} 
+              fill={isProductInWishlist ? "currentColor" : "none"}
+            />
           </button>
-          
-          <button 
-            className={styles.cartButton} 
-            onClick={handleAddToCart}
-            disabled={isAddingToCart || isOutOfStock}
-          >
-            {isAddingToCart ? (
-              <Loader2 size={18} className={styles.spinner} />
-            ) : (
-              <ShoppingCart size={18} />
-            )}
-          </button>
-        </div>
-      </div>
-      
-      <div className={styles.cardContent}>
-        <div className={styles.productInfo}>
-          <h3 className={styles.productName}>{product.name}</h3>
-          {product.author && (
-            <p className={styles.authorName}>By {product.author}</p>
-          )}
-          {product.description && (
-            <p className={styles.productDescription}>
-              {product.description.length > 80 
-                ? `${product.description.substring(0, 80)}...` 
-                : product.description
-              }
-            </p>
+
+          {/* Discount Badge */}
+          {discount > 0 && (
+            <div className={styles.discountBadge}>
+              {discount}% OFF
+            </div>
           )}
         </div>
         
-        {/* Rating - Agar Firebase mein hai toh show karo */}
-        {product.rating && (
-          <div className={styles.productRating}>
-            <div className={styles.ratingStars}>
+        <div className={styles.cardContent}>
+          <h3 className={styles.productTitle}>
+            {product.title || product.name}
+          </h3>
+          
+          <p className={styles.productAuthor}>
+            {product.author}
+          </p>
+
+          {/* Rating Stars */}
+          <div className={styles.rating}>
+            <div className={styles.stars}>
               {[...Array(5)].map((_, i) => (
                 <Star 
-                  key={i}
-                  size={14}
-                  className={i < Math.floor(product.rating) ? styles.filledStar : styles.emptyStar}
-                  fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
+                  key={i} 
+                  size={14} 
+                  fill={i < (product.rating || 4) ? "#ffd700" : "#e5e5e5"}
+                  strokeWidth={i < (product.rating || 4) ? 0 : 1}
                 />
               ))}
             </div>
-            <span className={styles.ratingValue}>{product.rating}</span>
-            {product.reviewCount && (
-              <span className={styles.reviewCount}>({product.reviewCount})</span>
-            )}
+            <span className={styles.ratingText}>({product.reviewCount || 24})</span>
           </div>
-        )}
-        
-        <div className={styles.productPricing}>
-          <span className={styles.currentPrice}>{formatPrice(product.price)}</span>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <span className={styles.originalPrice}>{formatPrice(product.originalPrice)}</span>
-          )}
-        </div>
 
-        {/* Stock Status */}
-        {product.stock !== undefined && (
-          <div className={styles.stockStatus}>
-            {isOutOfStock ? (
-              <span className={styles.outOfStockText}>Out of Stock</span>
-            ) : product.stock < 10 ? (
-              <span className={styles.lowStockText}>Only {product.stock} left</span>
+          <div className={styles.productPricing}>
+            {product.originalPrice && product.originalPrice > product.currentPrice ? (
+              <>
+                <div className={styles.priceRow}>
+                  <span className={styles.currentPrice}>
+                    {formatPrice(product.currentPrice)}
+                  </span>
+                  <span className={styles.originalPrice}>
+                    {formatPrice(product.originalPrice)}
+                  </span>
+                </div>
+                <div className={styles.saveAmount}>
+                  Save {formatPrice(amountSaved)}
+                </div>
+              </>
             ) : (
-              <span className={styles.inStockText}>In Stock</span>
+              <div className={styles.priceRow}>
+                <span className={styles.currentPrice}>
+                  {formatPrice(product.currentPrice || product.price)}
+                </span>
+              </div>
             )}
           </div>
-        )}
-      </div>
-    </div>
-  )
-}
+        </div>
+      </Link>
 
-export default ProductCard
+      {/* Add to Cart Button - Outside link */}
+      <button 
+        className={`${styles.addToCartButton} ${isAddingToCart ? styles.loading : ''}`}
+        onClick={handleAddToCart}
+        disabled={isAddingToCart}
+      >
+        {isAddingToCart ? 'Adding...' : (
+          <>
+            <ShoppingCart size={18} />
+            Add to Basket
+          </>
+        )}
+      </button>
+    </div>
+  );
+};
+
+export default ProductCard;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Upload, X } from 'lucide-react'
+import { adminCategories } from '../../../utils/firebase/adminConfig'
 import styles from './CategoryForm.module.css'
 
 const CategoryForm = ({ category, onSave, onCancel }) => {
@@ -9,6 +10,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
     isActive: true
   })
   const [image, setImage] = useState('')
+  const [imageFile, setImageFile] = useState(null) // Store actual file for upload
   const [uploading, setUploading] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -19,7 +21,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
         description: category.description || '',
         isActive: category.isActive !== undefined ? category.isActive : true
       })
-      setImage(category.imageUrl || '')
+      setImage(category.image || category.imageUrl || '')
     }
   }, [category])
 
@@ -37,13 +39,15 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
 
     setUploading(true)
     try {
-      // In a real app, you would upload to Firebase Storage
-      // const imageUrl = await adminCategories.uploadImage(file, category?.id || 'temp')
-      const imageUrl = URL.createObjectURL(file) // Temporary URL for demo
+      // Store file for later upload to Cloudinary
+      setImageFile(file)
+      
+      // Create temporary URL for preview
+      const imageUrl = URL.createObjectURL(file)
       setImage(imageUrl)
     } catch (error) {
-      console.error('Error uploading image:', error)
-      alert('Failed to upload image')
+      console.error('Error processing image:', error)
+      alert('Failed to process image')
     } finally {
       setUploading(false)
     }
@@ -51,23 +55,39 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
 
   const removeImage = () => {
     setImage('')
+    setImageFile(null)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    if (!formData.name.trim()) {
+      alert('Please enter a category name')
+      return
+    }
+
     setLoading(true)
 
     try {
-      const categoryData = {
-        ...formData,
-        imageUrl: image
+      let categoryData = { ...formData }
+
+      // If new image is selected, upload to Cloudinary
+      if (imageFile) {
+        setUploading(true)
+        // Pass the file to adminCategories which will handle Cloudinary upload
+        categoryData.imageFile = imageFile
+      } else if (image) {
+        // If existing image (URL), keep it
+        categoryData.image = image
       }
 
       await onSave(categoryData)
     } catch (error) {
       console.error('Error saving category:', error)
+      alert('Failed to save category')
     } finally {
       setLoading(false)
+      setUploading(false)
     }
   }
 
@@ -145,6 +165,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
                     type="button"
                     onClick={removeImage}
                     className={styles.removeImageButton}
+                    disabled={uploading}
                   >
                     <X size={16} />
                   </button>
@@ -154,7 +175,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
                 </p>
               </div>
             )}
-            {uploading && <span className={styles.uploadingText}>Uploading...</span>}
+            {uploading && <span className={styles.uploadingText}>Uploading to Cloudinary...</span>}
           </div>
         </div>
       </div>
@@ -165,14 +186,14 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
           type="button"
           onClick={onCancel}
           className={styles.cancelButton}
-          disabled={loading}
+          disabled={loading || uploading}
         >
           Cancel
         </button>
         <button
           type="submit"
           className={styles.saveButton}
-          disabled={loading}
+          disabled={loading || uploading}
         >
           {loading ? 'Saving...' : category ? 'Update Category' : 'Add Category'}
         </button>

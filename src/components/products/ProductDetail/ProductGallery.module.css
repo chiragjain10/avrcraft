@@ -115,12 +115,12 @@
 }
 
 .thumbnail:hover {
-  border-color: #c9a96e;
+  border-color: #2c3e50;
   transform: translateY(-2px);
 }
 
 .thumbnail.active {
-  border-color: #c9a96e;
+  border-color: #2c3e50;
   box-shadow: 0 4px 12px rgba(201, 169, 110, 0.3);
 }
 

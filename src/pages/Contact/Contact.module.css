@@ -23,7 +23,7 @@
 }
 
 .heroTitle {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 3rem;
   font-weight: 700;
   color: #f8f5f2;
@@ -63,7 +63,7 @@
 }
 
 .infoHeader h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.5rem;
   color: #1a2b3c;
   margin: 1rem 0 0.5rem 0;
@@ -108,7 +108,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c9a96e;
+  color: #2c3e50;
   flex-shrink: 0;
 }
 
@@ -117,7 +117,7 @@
 }
 
 .infoContent h3 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.1rem;
   color: #1a2b3c;
   margin: 0 0 0.5rem 0;
@@ -154,7 +154,7 @@
 }
 
 .quickLinks h3 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.1rem;
   color: #1a2b3c;
   margin: 0 0 1rem 0;
@@ -169,7 +169,7 @@
 .link {
   font-family: 'Lora', serif;
   font-size: 0.9rem;
-  color: #c9a96e;
+  color: #2c3e50;
   text-decoration: none;
   transition: all 0.2s ease;
   padding: 0.25rem 0;
@@ -201,7 +201,7 @@
 }
 
 .formHeader h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.75rem;
   color: #1a2b3c;
   margin: 0 0 0.5rem 0;
@@ -286,7 +286,7 @@
 .formSelect:focus,
 .formTextarea:focus {
   outline: none;
-  border-color: #c9a96e;
+  border-color: #2c3e50;
   box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
 }
 
@@ -317,7 +317,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
   transform: translateY(-2px);
 }
@@ -368,7 +368,7 @@
 }
 
 .mapPlaceholder h3 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.25rem;
   color: #1a2b3c;
   margin: 1rem 0 0.5rem 0;
@@ -396,7 +396,7 @@
 }
 
 .directionsButton:hover {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
 }
 
@@ -407,7 +407,7 @@
 }
 
 .locationInfo h3 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.5rem;
   color: #1a2b3c;
   margin: 0;
@@ -474,7 +474,7 @@
 }
 
 .successState h1 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2rem;
   color: #1a2b3c;
   margin: 0 0 1rem 0;
@@ -510,7 +510,7 @@
 }
 
 .sendAnother:hover {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
 }
 
@@ -528,8 +528,8 @@
 }
 
 .backHome:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
 }
 
 /* Animations */

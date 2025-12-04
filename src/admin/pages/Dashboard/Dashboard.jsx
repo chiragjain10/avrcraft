@@ -6,7 +6,10 @@ import {
   TrendingUp,
   Users,
   DollarSign,
-  Eye
+  Eye,
+  Users as ArtisansIcon,
+  Award,
+  Palette
 } from 'lucide-react'
 import { useAdmin } from '../../contexts/AdminContext'
 import StatsCard from '../../components/common/StatsCard/StatsCard'
@@ -17,10 +20,18 @@ import styles from './Dashboard.module.css'
 const Dashboard = () => {
   const { stats } = useAdmin()
 
+  // Dashboard stats mein artisans add karein
+  const updatedStats = {
+    ...stats,
+    totalArtisans: stats.totalArtisans || 0,
+    featuredArtisans: stats.featuredArtisans || 0,
+    activeArtisans: stats.activeArtisans || 0
+  }
+
   const statCards = [
     {
       title: 'Total Products',
-      value: stats.totalProducts || 0,
+      value: updatedStats.totalProducts || 0,
       icon: Package,
       color: 'primary',
       change: '+12%',
@@ -28,7 +39,7 @@ const Dashboard = () => {
     },
     {
       title: 'Total Categories',
-      value: stats.totalCategories || 0,
+      value: updatedStats.totalCategories || 0,
       icon: FolderOpen,
       color: 'success',
       change: '+5%',
@@ -36,18 +47,34 @@ const Dashboard = () => {
     },
     {
       title: 'Total Orders',
-      value: stats.totalOrders || 0,
+      value: updatedStats.totalOrders || 0,
       icon: ShoppingCart,
       color: 'warning',
       change: '+23%',
       trend: 'up'
     },
     {
-      title: 'Total Blogs',
-      value: stats.totalBlogs || 0,
-      icon: FileText,
+      title: 'Total Artisans',
+      value: updatedStats.totalArtisans || 0,
+      icon: ArtisansIcon,
       color: 'info',
       change: '+8%',
+      trend: 'up'
+    },
+    {
+      title: 'Featured Artisans',
+      value: updatedStats.featuredArtisans || 0,
+      icon: Award,
+      color: 'purple',
+      change: '+15%',
+      trend: 'up'
+    },
+    {
+      title: 'Active Artisans',
+      value: updatedStats.activeArtisans || 0,
+      icon: Users,
+      color: 'orange',
+      change: '+10%',
       trend: 'up'
     }
   ]
@@ -59,6 +86,20 @@ const Dashboard = () => {
       icon: Package,
       path: '/admin/products?action=create',
       color: 'primary'
+    },
+    {
+      title: 'Manage Artisans',
+      description: 'Add or edit artisan profiles',
+      icon: ArtisansIcon,
+      path: '/admin/artisans',
+      color: 'info'
+    },
+    {
+      title: 'Add New Artisan',
+      description: 'Create new artisan profile',
+      icon: Users,
+      path: '/admin/artisans/create',
+      color: 'success'
     },
     {
       title: 'Manage Categories',
@@ -101,7 +142,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - 6 cards in 3x2 layout */}
       <div className={styles.statsGrid}>
         {statCards.map((card, index) => (
           <StatsCard
@@ -187,14 +228,14 @@ const Dashboard = () => {
         <div className={styles.metricCard}>
           <div className={styles.metricHeader}>
             <div className={styles.metricIcon}>
-              <Eye size={20} />
+              <Palette size={20} />
             </div>
-            <span className={styles.metricLabel}>Page Views</span>
+            <span className={styles.metricLabel}>Artisan Crafts</span>
           </div>
-          <div className={styles.metricValue}>8,432</div>
+          <div className={styles.metricValue}>15+</div>
           <div className={styles.metricChange}>
             <TrendingUp size={16} />
-            <span className={styles.positive}>+8% from yesterday</span>
+            <span className={styles.positive}>5 new crafts added</span>
           </div>
         </div>
       </div>

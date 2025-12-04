@@ -44,7 +44,7 @@
 .imagePlaceholder {
   width: 80%;
   height: 80%;
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  background: #2c3e50;
   border-radius: 8px;
   opacity: 0.7;
 }
@@ -83,7 +83,7 @@
 }
 
 .bestsellerBadge {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
 }
 
@@ -145,7 +145,7 @@
 }
 
 .productName {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
   color: #1a2b3c;
@@ -163,7 +163,7 @@
   gap: 0.25rem;
   font-family: 'Lora', serif;
   font-size: 0.8rem;
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .artisanInfo svg {
@@ -182,7 +182,7 @@
 }
 
 .filledStar {
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .emptyStar {
@@ -224,7 +224,7 @@
 }
 
 .currentPrice {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -296,7 +296,7 @@
 }
 
 .addToCartButton:hover {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
   transform: translateY(-2px);
 }

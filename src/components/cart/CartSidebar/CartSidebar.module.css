@@ -43,7 +43,7 @@
 }
 
 .titleSection h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.25rem;
   color: #1a2b3c;
   margin: 0 0 0.25rem 0;
@@ -68,7 +68,7 @@
 
 .closeButton:hover {
   background: #f8f5f2;
-  color: #c9a96e;
+  color: #2c3e50;
 }
 
 .cartContent {
@@ -93,7 +93,7 @@
 }
 
 .emptyCart h3 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.25rem;
   color: #1a2b3c;
   margin: 0 0 0.5rem 0;
@@ -121,7 +121,7 @@
 }
 
 .continueShopping:hover {
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
 }
 
@@ -178,7 +178,7 @@
 }
 
 .totalRow span:last-child {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.25rem;
   color: #1a2b3c;
   font-weight: 700;
@@ -199,7 +199,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
   border: none;
   border-radius: 8px;
@@ -232,8 +232,8 @@
 }
 
 .continueButton:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
 }
 
 @keyframes fadeIn {

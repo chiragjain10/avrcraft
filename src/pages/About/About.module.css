@@ -45,7 +45,7 @@
 }
 
 .heroTitle {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 3rem;
   font-weight: 700;
   line-height: 1.1;
@@ -54,7 +54,7 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  background: #2c3e50;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -79,7 +79,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
   text-decoration: none;
   padding: 1rem 2rem;
@@ -113,8 +113,8 @@
 }
 
 .secondaryButton:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
   transform: translateY(-2px);
 }
 
@@ -186,7 +186,7 @@
 .statIcon {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  background: #2c3e50;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -202,7 +202,7 @@
 }
 
 .statNumber {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -235,7 +235,7 @@
 }
 
 .storyText h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -268,7 +268,7 @@
 }
 
 .feature svg {
-  color: #c9a96e;
+  color: #2c3e50;
   flex-shrink: 0;
 }
 
@@ -293,7 +293,7 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(to bottom, #c9a96e, #a68a64);
+  background: linear-gradient(to bottom, #2c3e50, #a68a64);
   border-radius: 1px;
 }
 
@@ -313,7 +313,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 0.9rem;
   font-weight: 700;
   flex-shrink: 0;
@@ -330,7 +330,7 @@
 }
 
 .timelineContent h4 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.1rem;
   color: #1a2b3c;
   margin: 0 0 0.5rem 0;
@@ -356,7 +356,7 @@
 }
 
 .sectionHeader h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -396,7 +396,7 @@
 .valueIcon {
   width: 70px;
   height: 70px;
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  background: #2c3e50;
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -406,7 +406,7 @@
 }
 
 .valueCard h3 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -459,7 +459,7 @@
 .imagePlaceholder {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
+  background: #2c3e50;
   border-radius: 50%;
   opacity: 0.7;
 }
@@ -469,7 +469,7 @@
 }
 
 .memberInfo h3 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
   color: #1a2b3c;
@@ -479,7 +479,7 @@
 .memberRole {
   font-family: 'Lora', serif;
   font-size: 0.9rem;
-  color: #c9a96e;
+  color: #2c3e50;
   font-weight: 500;
   display: block;
   margin-bottom: 1rem;
@@ -527,7 +527,7 @@
 }
 
 .ctaContent h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   color: #f8f5f2;
@@ -554,7 +554,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #c9a96e;
+  background: #2c3e50;
   color: #1a2b3c;
   text-decoration: none;
   padding: 1rem 2rem;
@@ -587,8 +587,8 @@
 }
 
 .ctaSecondary:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
+  border-color: #2c3e50;
+  color: #2c3e50;
   transform: translateY(-2px);
 }
 

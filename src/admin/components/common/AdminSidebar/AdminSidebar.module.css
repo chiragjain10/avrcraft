@@ -45,7 +45,7 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  color: var(--admin-primary);
+  color: #ffffff;
   font-family: var(--font-heading);
   font-size: 1rem;
 }
@@ -116,7 +116,7 @@
 
 .menuLink.active {
   background: var(--admin-accent);
-  color: var(--admin-primary);
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -157,7 +157,7 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  color: var(--admin-primary);
+  color: #ffffff;
   font-family: var(--font-heading);
   font-size: 0.9rem;
 }

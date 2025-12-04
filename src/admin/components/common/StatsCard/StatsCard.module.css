@@ -66,7 +66,7 @@
 
 .statsCard.primary .cardIcon {
   background: rgba(26, 43, 60, 0.1);
-  color: var(--admin-primary);
+  color: #ffffff;
 }
 
 .statsCard.success .cardIcon {
@@ -107,7 +107,7 @@
 }
 
 .statsCard.primary .changeIndicator {
-  color: var(--admin-primary);
+  color: #ffffff;
 }
 
 .statsCard.success .changeIndicator {
@@ -139,7 +139,7 @@
   font-family: var(--font-heading);
   font-size: 2.25rem;
   font-weight: 700;
-  color: var(--admin-primary);
+  color: var(--admin-accent);
   margin: 0 0 0.5rem 0;
   line-height: 1;
 }

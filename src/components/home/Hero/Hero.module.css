@@ -1,342 +1,464 @@
 .hero {
   position: relative;
-  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Hero Slider */
+.heroSlider {
+  position: relative;
+  height: 600px;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Slide Styles */
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1a2b3c 0%, #2d5a4d 100%);
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.heroBackground {
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 1;
+}
+
+/* Slide Overlay */
+.slideOverlay {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 20% 80%, rgba(201, 169, 110, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(45, 90, 77, 0.1) 0%, transparent 50%);
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  z-index: 1;
 }
 
-.heroOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(26, 43, 60, 0.9) 0%, rgba(45, 90, 77, 0.7) 100%);
-}
-
-.heroContent {
+/* Slide Content */
+.slideContent {
   position: relative;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  z-index: 2;
+  max-width: 800px;
+  padding: 0 40px;
+  text-align: center;
+  color: white;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease 0.3s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slideTitle {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1.1;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.slideSubtitle {
+  font-family: "Georgia", serif;
+  font-size: 1.8rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+  font-style: italic;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.announcement {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--admin-primary);
+  margin-bottom: 2.5rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.slideCta {
+  display: inline-block;
+  padding: 16px 40px;
+  background: var(--admin-primary);
+  color: white;
+  text-decoration: none;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 2px solid transparent;
+}
+
+.slideCta:hover {
+  background: white;
+  color: var(--admin-primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-color: var(--admin-primary);
+}
+
+/* Navigation Buttons */
+.sliderNav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  opacity: 0.7;
+}
+
+.sliderNav:hover {
+  background: white;
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.sliderNav.prev {
+  left: 30px;
+}
+
+.sliderNav.next {
+  right: 30px;
+}
+
+/* Dots Navigation */
+.sliderDots {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.dot.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Hero Navigation Bar */
+.heroNav {
+  background: var(--admin-accent);
+  padding: 15px 0;
+  position: relative;
   z-index: 2;
 }
 
-.heroText {
+.navLinks {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.badge {
-  display: inline-flex;
-  background: rgba(201, 169, 110, 0.1);
-  border: 1px solid rgba(201, 169, 110, 0.3);
-  border-radius: 20px;
-  padding: 0.5rem 1rem;
-  backdrop-filter: blur(10px);
-  align-self: flex-start;
-}
-
-.badgeText {
-  font-family: 'Lora', serif;
-  font-size: 0.8rem;
-  color: #c9a96e;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-.heroTitle {
-  font-family: 'Merriweather', serif;
-  font-size: 3.5rem;
-  font-weight: 700;
-  line-height: 1.1;
-  color: #f8f5f2;
-  margin: 0;
-}
-
-.highlight {
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.heroDescription {
-  font-family: 'Lora', serif;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: rgba(248, 245, 242, 0.8);
-  margin: 0;
-  max-width: 500px;
-}
-
-.heroActions {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 10px;
+  padding: 0 20px;
 }
 
-.primaryButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #c9a96e;
-  color: #1a2b3c;
+.navLinks a {
+  color: white;
   text-decoration: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-family: 'Lora', serif;
-  font-size: 1rem;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.95rem;
   font-weight: 600;
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
-}
-
-.primaryButton:hover {
-  background: #a68a64;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(201, 169, 110, 0.3);
-}
-
-.secondaryButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: transparent;
-  color: #f8f5f2;
-  border: 1px solid rgba(248, 245, 242, 0.3);
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-family: 'Lora', serif;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  backdrop-filter: blur(10px);
-}
-
-.secondaryButton:hover {
-  border-color: #c9a96e;
-  color: #c9a96e;
-  transform: translateY(-2px);
-}
-
-.heroStats {
-  display: flex;
-  gap: 2rem;
-  margin-top: 1rem;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.statNumber {
-  font-family: 'Merriweather', serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #c9a96e;
-}
-
-.statLabel {
-  font-family: 'Lora', serif;
-  font-size: 0.8rem;
-  color: rgba(248, 245, 242, 0.7);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.heroVisual {
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  padding: 5px 0;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  align-items: center;
 }
 
-.floatingCard {
-  background: rgba(248, 245, 242, 0.95);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(232, 228, 225, 0.5);
-  animation: float 6s ease-in-out infinite;
+.navLinks a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--admin-primary);
+  transition: width 0.3s ease;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+.navLinks a:hover {
+  color: var(--admin-primary);
 }
 
-.cardBadge {
-  display: inline-block;
-  background: #2d5a4d;
-  color: #f8f5f2;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-family: 'Lora', serif;
-  font-size: 0.7rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
+.navLinks a:hover::after {
+  width: 100%;
 }
 
-.cardTitle {
-  font-family: 'Merriweather', serif;
-  font-size: 1.25rem;
-  color: #1a2b3c;
-  margin: 0 0 0.5rem 0;
+.deliveryInfo {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.85rem;
+  padding: 0 20px;
 }
 
-.cardText {
-  font-family: 'Lora', serif;
-  font-size: 0.9rem;
-  color: #3c3c3c;
-  margin: 0;
-}
-
-.productShowcase {
-  background: rgba(248, 245, 242, 0.1);
-  border: 1px solid rgba(248, 245, 242, 0.2);
-  border-radius: 12px;
-  padding: 1.5rem;
-  backdrop-filter: blur(10px);
-  animation: float 6s ease-in-out infinite 1s;
-}
-
-.showcaseItem {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.itemImage {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, #c9a96e, #a68a64);
-  border-radius: 8px;
-}
-
-.itemInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.itemName {
-  font-family: 'Lora', serif;
-  font-size: 0.9rem;
-  color: #f8f5f2;
-  font-weight: 500;
-}
-
-.itemPrice {
-  font-family: 'Merriweather', serif;
-  font-size: 1rem;
-  color: #c9a96e;
-  font-weight: 600;
-}
-
-@media (max-width: 968px) {
-  .heroContent {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    text-align: center;
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .heroSlider {
+    height: 550px;
   }
   
-  .heroTitle {
+  .slideTitle {
+    font-size: 3rem;
+  }
+  
+  .slideSubtitle {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .heroSlider {
+    height: 500px;
+  }
+  
+  .slideTitle {
     font-size: 2.5rem;
   }
   
-  .badge {
-    align-self: center;
+  .slideSubtitle {
+    font-size: 1.4rem;
   }
   
-  .heroDescription {
-    margin: 0 auto;
+  .announcement {
+    font-size: 1.1rem;
   }
   
-  .heroActions {
-    justify-content: center;
+  .slideCta {
+    padding: 14px 35px;
+    font-size: 1rem;
   }
   
-  .heroStats {
-    justify-content: center;
+  .navLinks {
+    gap: 20px;
+  }
+  
+  .navLinks a {
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 768px) {
-  .hero {
-    min-height: 80vh;
+  .heroSlider {
+    height: 450px;
   }
   
-  .heroTitle {
-    font-size: 2rem;
+  .slideContent {
+    padding: 0 30px;
   }
   
-  .heroDescription {
+  .slideTitle {
+    font-size: 2.2rem;
+  }
+  
+  .slideSubtitle {
+    font-size: 1.2rem;
+  }
+  
+  .announcement {
     font-size: 1rem;
+    padding: 8px 16px;
+    letter-spacing: 2px;
   }
   
-  .heroActions {
-    flex-direction: column;
-    align-items: center;
+  .slideCta {
+    padding: 12px 30px;
+    font-size: 0.9rem;
   }
   
-  .primaryButton,
-  .secondaryButton {
-    width: 100%;
-    max-width: 250px;
-    justify-content: center;
+  .sliderNav {
+    width: 50px;
+    height: 50px;
   }
   
-  .heroStats {
-    gap: 1.5rem;
+  .sliderNav.prev {
+    left: 20px;
   }
   
-  .statNumber {
-    font-size: 1.25rem;
+  .sliderNav.next {
+    right: 20px;
+  }
+  
+  .navLinks {
+    gap: 15px;
+  }
+  
+  .navLinks a {
+    font-size: 0.85rem;
   }
 }
 
-@media (max-width: 480px) {
-  .heroContent {
-    padding: 0 0.5rem;
-    gap: 2rem;
+@media (max-width: 576px) {
+  .heroSlider {
+    height: 400px;
   }
   
-  .heroTitle {
-    font-size: 1.75rem;
+  .slideContent {
+    padding: 0 20px;
   }
   
-  .floatingCard,
-  .productShowcase {
-    padding: 1rem;
+  .slideTitle {
+    font-size: 1.8rem;
   }
+  
+  .slideSubtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .announcement {
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    letter-spacing: 1px;
+  }
+  
+  .slideCta {
+    padding: 10px 25px;
+    font-size: 0.85rem;
+  }
+  
+  .sliderNav {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .sliderNav.prev {
+    left: 15px;
+  }
+  
+  .sliderNav.next {
+    right: 15px;
+  }
+  
+  .sliderDots {
+    bottom: 20px;
+  }
+  
+  .dot {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .heroNav {
+    padding: 12px 0;
+  }
+  
+  .navLinks {
+    gap: 10px;
+    padding: 0 15px;
+  }
+  
+  .navLinks a {
+    font-size: 0.75rem;
+  }
+  
+  .deliveryInfo {
+    font-size: 0.75rem;
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  .heroSlider {
+    height: 350px;
+  }
+  
+  .slideTitle {
+    font-size: 1.5rem;
+  }
+  
+  .slideSubtitle {
+    font-size: 0.9rem;
+  }
+  
+  .announcement {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+  
+  .navLinks {
+    gap: 8px;
+  }
+  
+  .navLinks a {
+    font-size: 0.7rem;
+  }
+}
+
+/* Animation for slide transition */
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide.active .slideContent {
+  animation: slideFadeIn 0.8s ease forwards;
 }

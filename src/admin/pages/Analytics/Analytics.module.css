@@ -13,7 +13,7 @@
   font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 700;
-  color: var(--admin-primary);
+  color: var(--admin-accent);
   margin: 0 0 0.5rem 0;
   line-height: 1.2;
 }
@@ -81,7 +81,7 @@
   font-family: var(--font-heading);
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--admin-primary);
+  color: #ffffff;
   margin: 0;
 }
 
@@ -120,7 +120,7 @@
 .downloadButton:hover {
   background: var(--admin-primary);
   color: white;
-  border-color: var(--admin-primary);
+  border-color: #ffffff;
 }
 
 /* Chart */
@@ -190,7 +190,7 @@
   font-family: var(--font-heading);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--admin-primary);
+  color: #ffffff;
 }
 
 /* Sections */
@@ -206,7 +206,7 @@
   font-family: var(--font-heading);
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--admin-primary);
+  color: var(--admin-accent);
   margin: 0;
 }
 
@@ -359,7 +359,7 @@
   font-family: var(--font-heading);
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--admin-primary);
+  color: #ffffff;
   min-width: 40px;
   text-align: right;
 }
@@ -397,7 +397,7 @@
   width: 36px;
   height: 36px;
   background: var(--admin-accent);
-  color: var(--admin-primary);
+  color: #ffffff;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -415,7 +415,7 @@
   font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--admin-primary);
+  color: #ffffff;
   margin-bottom: 0.5rem;
   line-height: 1;
 }
