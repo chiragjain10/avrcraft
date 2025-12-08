@@ -1,3 +1,4 @@
+// AppRouter.jsx
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home/Home'
 import Shop from './pages/Shop/Shop'
@@ -14,17 +15,7 @@ import Blog from './pages/Blog/Blog'
 import GiftCards from './pages/GiftCards/GiftCards'
 import Join from './pages/Join/Join'
 import Artisans from './pages/Artisans/Artisans'
-
-// New Book Category Pages
-import Bestsellers from './pages/Bestsellers/Bestsellers'
-import Fiction from './pages/Fiction/Fiction'
-import NonFiction from './pages/NonFiction/NonFiction'
-import Childrens from './pages/Childrens/Childrens'
-import Stationery from './pages/Stationery/Stationery'
-import Gifts from './pages/Gifts/Gifts'
-
 import AdminApp from './admin/AdminApp'
-
 import NotFound from './pages/NotFound/NotFound'
 
 const AppRouter = () => {
@@ -54,17 +45,17 @@ const AppRouter = () => {
       <Route path="/join" element={<Join />} />
       <Route path="/artisans" element={<Artisans />} />
 
-      {/* Redirects for convenience */}
+      {/* Redirect old category routes to shop with query params */}
+      <Route path="/bestsellers" element={<Navigate to="/shop?category=bestsellers" replace />} />
+      <Route path="/fiction" element={<Navigate to="/shop?category=fiction" replace />} />
+      <Route path="/non-fiction" element={<Navigate to="/shop?category=non-fiction" replace />} />
+      <Route path="/childrens" element={<Navigate to="/shop?category=childrens" replace />} />
+      <Route path="/stationery" element={<Navigate to="/shop?category=stationery" replace />} />
+      <Route path="/gifts" element={<Navigate to="/shop?category=gifts" replace />} />
+
+      {/* Additional redirects for convenience */}
       <Route path="/home" element={<Navigate to="/" replace />} />
       <Route path="/products" element={<Navigate to="/shop" replace />} />
-
-      {/* Book Category Pages */}
-      <Route path="/bestsellers" element={<Bestsellers />} />
-      <Route path="/fiction" element={<Fiction />} />
-      <Route path="/non-fiction" element={<NonFiction />} />
-      <Route path="/childrens" element={<Childrens />} />
-      <Route path="/stationery" element={<Stationery />} />
-      <Route path="/gifts" element={<Gifts />} />
 
       {/* 404 - Catch all */}
       <Route path="*" element={<NotFound />} />

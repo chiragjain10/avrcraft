@@ -68,7 +68,7 @@ const ProductCard = ({ product }) => {
           name: product.title || product.name,
           price: product.currentPrice || product.price,
           originalPrice: product.originalPrice,
-          imageUrl: product.coverImage || product.imageUrl,
+          imageUrl: product.images[0] || product.imageUrl,
           author: product.author,
           category: product.category,
           addedAt: new Date().toISOString()
@@ -109,9 +109,9 @@ const ProductCard = ({ product }) => {
     <div className={styles.productCard}>
       <Link to={`/product/${product.id}`} className={styles.productLink}>
         <div className={styles.cardImage}>
-          {product.coverImage ? (
+          {product.images[0] ? (
             <img 
-              src={product.coverImage} 
+              src={product.images[0]} 
               alt={product.title || product.name}
               className={styles.productImage}
               loading="lazy"

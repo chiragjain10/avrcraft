@@ -1,20 +1,21 @@
+/* src/components/products/ProductFilters/ProductFilters.module.css */
 .filters {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 16px;
 }
 
-.filterSection {
+.section {
   border-bottom: 1px solid #e8e4e1;
-  padding-bottom: 1.5rem;
+  padding-bottom: 16px;
 }
 
-.filterSection:last-child {
+.section:last-child {
   border-bottom: none;
   padding-bottom: 0;
 }
 
-.filterHeader {
+.sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -22,85 +23,93 @@
   background: none;
   border: none;
   padding: 0;
-  font-family: 'Lora', serif;
+  font-family: 'Merriweather', serif;
   font-size: 1rem;
   font-weight: 600;
   color: #1a2b3c;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
 }
 
-.filterHeader:hover {
+.sectionHeader:hover {
   color: #2c3e50;
 }
 
-.filterOptions {
+.sectionTitle {
+  font-family: 'Merriweather', serif;
+  font-size: 1.1rem;
+  color: #1a2b3c;
+  font-weight: 600;
+}
+
+.sectionContent {
+  padding-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 8px;
   max-height: 300px;
   overflow-y: auto;
 }
 
-.filterOption {
+.option {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 10px;
+  padding: 6px 0;
   cursor: pointer;
-  font-family: 'Lora', serif;
-  font-size: 0.9rem;
-  color: #3c3c3c;
   transition: all 0.2s ease;
 }
 
-.filterOption:hover {
-  color: #1a2b3c;
+.option:hover {
+  transform: translateX(2px);
 }
 
-.filterCheckbox,
-.filterRadio {
+.checkbox,
+.radio {
   display: none;
 }
 
-.checkboxCustom,
-.radioCustom {
+.customCheckbox,
+.customRadio {
   width: 18px;
   height: 18px;
   border: 2px solid #e8e4e1;
-  border-radius: 4px;
   background: white;
   flex-shrink: 0;
   position: relative;
   transition: all 0.2s ease;
 }
 
-.radioCustom {
+.customCheckbox {
+  border-radius: 4px;
+}
+
+.customRadio {
   border-radius: 50%;
 }
 
-.filterCheckbox:checked + .checkboxCustom {
+.checkbox:checked + .customCheckbox {
   background: #2c3e50;
   border-color: #2c3e50;
 }
 
-.filterCheckbox:checked + .checkboxCustom::after {
+.checkbox:checked + .customCheckbox::after {
   content: '✓';
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
 }
 
-.filterRadio:checked + .radioCustom {
+.radio:checked + .customRadio {
   background: #2c3e50;
   border-color: #2c3e50;
 }
 
-.filterRadio:checked + .radioCustom::after {
+.radio:checked + .customRadio::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -112,27 +121,31 @@
   border-radius: 50%;
 }
 
-.optionLabel {
+.optionText {
   flex: 1;
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  color: #3c3c3c;
+}
+
+.count {
+  font-family: 'Lora', serif;
+  font-size: 0.8rem;
+  color: #888;
 }
 
 /* Price Range */
-.priceRange {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .priceInputs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .priceInput {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 4px;
 }
 
 .priceInput label {
@@ -143,7 +156,8 @@
 }
 
 .priceField {
-  padding: 0.5rem;
+  width: 100%;
+  padding: 8px 12px;
   border: 1px solid #e8e4e1;
   border-radius: 6px;
   font-family: 'Lora', serif;
@@ -154,88 +168,190 @@
 
 .priceField:focus {
   outline: none;
-  border-color: #2c3e50;
-  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
+  border-color: #a68a64;
+  box-shadow: 0 0 0 2px rgba(166, 138, 100, 0.1);
 }
 
 .pricePresets {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 6px;
 }
 
-.pricePreset {
-  background: none;
+.preset {
+  padding: 8px 12px;
+  background: #f8f5f2;
   border: 1px solid #e8e4e1;
   border-radius: 6px;
-  padding: 0.5rem 0.75rem;
   font-family: 'Lora', serif;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #3c3c3c;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
 }
 
-.pricePreset:hover {
-  border-color: #2c3e50;
-  color: #2c3e50;
-}
-
-.pricePreset.active {
-  background: #2c3e50;
-  border-color: #2c3e50;
+.preset:hover {
+  border-color: #a68a64;
   color: #1a2b3c;
-  font-weight: 500;
 }
 
-/* Rating Stars */
-.ratingStars {
+.preset.active {
+  background: #1a2b3c;
+  border-color: #1a2b3c;
+  color: #f8f5f2;
+}
+
+/* Stars */
+.stars {
   display: flex;
-  gap: 0.1rem;
-  margin-right: 0.5rem;
+  gap: 2px;
+  margin-right: 8px;
 }
 
 .starFilled {
   color: #2c3e50;
-  font-size: 0.9rem;
 }
 
 .starEmpty {
   color: #e8e4e1;
-  font-size: 0.9rem;
 }
 
 .ratingText {
+  font-family: 'Lora', serif;
   font-size: 0.8rem;
-  opacity: 0.7;
+  color: #888;
 }
 
-/* Scrollbar Styling */
-.filterOptions::-webkit-scrollbar {
+/* Scrollbar */
+.sectionContent::-webkit-scrollbar {
   width: 4px;
 }
 
-.filterOptions::-webkit-scrollbar-track {
+.sectionContent::-webkit-scrollbar-track {
   background: #f8f5f2;
   border-radius: 2px;
 }
 
-.filterOptions::-webkit-scrollbar-thumb {
+.sectionContent::-webkit-scrollbar-thumb {
   background: #e8e4e1;
   border-radius: 2px;
 }
 
-.filterOptions::-webkit-scrollbar-thumb:hover {
-  background: #2c3e50;
+.sectionContent::-webkit-scrollbar-thumb:hover {
+  background: #a68a64;
 }
 
+/* Responsive */
 @media (max-width: 480px) {
   .priceInputs {
     grid-template-columns: 1fr;
   }
   
-  .filterOptions {
+  .sectionContent {
     max-height: 200px;
   }
+}
+
+/* Add these to ProductFilters.module.css */
+
+.loading {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  color: #888;
+  padding: 10px 0;
+  text-align: center;
+  font-style: italic;
+}
+
+.noData {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  color: #888;
+  padding: 10px 0;
+  text-align: center;
+}
+
+/* Add this to existing styles */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.option:hover {
+  transform: translateX(2px);
+}
+
+.checkbox,
+.radio {
+  display: none;
+}
+
+.customCheckbox,
+.customRadio {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #e8e4e1;
+  background: white;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.customCheckbox {
+  border-radius: 4px;
+}
+
+.customRadio {
+  border-radius: 50%;
+}
+
+.checkbox:checked + .customCheckbox {
+  background: #2c3e50;
+  border-color: #2c3e50;
+}
+
+.checkbox:checked + .customCheckbox::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.radio:checked + .customRadio {
+  background: #2c3e50;
+  border-color: #2c3e50;
+}
+
+.radio:checked + .customRadio::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+}
+
+.optionText {
+  flex: 1;
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  color: #3c3c3c;
+}
+
+.count {
+  font-family: 'Lora', serif;
+  font-size: 0.8rem;
+  color: #888;
 }

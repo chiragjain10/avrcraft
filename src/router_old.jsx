@@ -1,72 +1,74 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home/Home'
 import Shop from './pages/Shop/Shop'
-import ProductDetailPage from './pages/ProductDetail/ProductDetailPage'
+import ProductDetail from './pages/ProductDetail/ProductDetailPage'
+import Cart from './pages/Cart/CartPage'
+import Checkout from './pages/Checkout/Checkout'
 import About from './pages/About/About'
 import Contact from './pages/Contact/Contact'
-import CartPage from './pages/Cart/CartPage'
 import LoginPage from './pages/Auth/LoginPage'
 import RegisterPage from './pages/Auth/RegisterPage'
-import Checkout from './pages/Checkout/Checkout'
+import Wishlist from './pages/Wishlist/Wishlist'
+import Help from './pages/Help/Help'
+import Blog from './pages/Blog/Blog'
+import GiftCards from './pages/GiftCards/GiftCards'
+import Join from './pages/Join/Join'
+import Artisans from './pages/Artisans/Artisans'
+
+// New Book Category Pages
+import Bestsellers from './pages/Bestsellers/Bestsellers'
+import Fiction from './pages/Fiction/Fiction'
+import NonFiction from './pages/NonFiction/NonFiction'
+import Childrens from './pages/Childrens/Childrens'
+import Stationery from './pages/Stationery/Stationery'
+import Gifts from './pages/Gifts/Gifts'
+
 import AdminApp from './admin/AdminApp'
+
+import NotFound from './pages/NotFound/NotFound'
 
 const AppRouter = () => {
   return (
     <Routes>
-      {/* Main Routes */}
+      {/* Main Pages */}
       <Route path="/" element={<Home />} />
       <Route path="/shop" element={<Shop />} />
-      <Route path="/product/:id" element={<ProductDetailPage />} />
+      <Route path="/product/:id" element={<ProductDetail />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/checkout" element={<Checkout />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
-      
-      {/* Cart & Checkout Routes */}
-      <Route path="/cart" element={<CartPage />} />
-      <Route path="/checkout" element={<Checkout />} />
-      
-      {/* Authentication Routes */}
+
+      {/* Auth */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      
-      {/* Category Routes */}
-      <Route path="/category/:category" element={<Shop />} />
-      
-      {/* Search Route */}
-      <Route path="/search" element={<Shop />} />
-      
-      {/* 404 Route - Catch all undefined routes */}
-      <Route path="*" element={<NotFound />} />
-      <Route path="/admin/*" element={<AdminApp />} />
-    </Routes>
-  )
-}
 
-// Simple 404 component
-const NotFound = () => {
-  return (
-    <div style={{ 
-      padding: '4rem', 
-      textAlign: 'center',
-      minHeight: '50vh',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center'
-    }}>
-      <h1>404 - Page Not Found</h1>
-      <p>The page you are looking for doesn't exist.</p>
-      <a href="/" style={{ 
-        marginTop: '1rem',
-        padding: '0.75rem 1.5rem',
-        backgroundColor: '#007bff',
-        color: 'white',
-        textDecoration: 'none',
-        borderRadius: '4px'
-      }}>
-        Go Back Home
-      </a>
-    </div>
+      {/* Account & Admin */}
+      <Route path="/admin/*" element={<AdminApp />} />
+
+      {/* TopBar Links */}
+      <Route path="/wishlist" element={<Wishlist />} />
+      <Route path="/help" element={<Help />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/gift-cards" element={<GiftCards />} />
+      <Route path="/join" element={<Join />} />
+      <Route path="/artisans" element={<Artisans />} />
+
+      {/* Redirects for convenience */}
+      <Route path="/home" element={<Navigate to="/" replace />} />
+      <Route path="/products" element={<Navigate to="/shop" replace />} />
+
+      {/* Book Category Pages */}
+      <Route path="/bestsellers" element={<Bestsellers />} />
+      <Route path="/fiction" element={<Fiction />} />
+      <Route path="/non-fiction" element={<NonFiction />} />
+      <Route path="/childrens" element={<Childrens />} />
+      <Route path="/stationery" element={<Stationery />} />
+      <Route path="/gifts" element={<Gifts />} />
+
+      {/* 404 - Catch all */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   )
 }
 

@@ -16,24 +16,70 @@ const MainBar = () => {
   const { searchQuery, setSearchQuery } = useSearch()
   const navigate = useNavigate()
   const inputRef = useRef(null)
+  const mobileMenuRef = useRef(null)
 
-  // sync incoming global search
-  useEffect(() => setLocalSearch(searchQuery || ''), [searchQuery])
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (mobileMenuRef.current && 
+          !mobileMenuRef.current.contains(event.target) &&
+          !event.target.closest(`.${styles.mobileMenuButton}`)) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('touchstart', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+    }
+  }, [isMobileMenuOpen])
+
+  // Close menu on escape key
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [isMobileMenuOpen])
+
+  // Track if the search was initiated by user input
+  const isUserInputRef = useRef(false)
+
+  // Sync incoming global search, but only if it's not from user input
+  useEffect(() => {
+    if (!isUserInputRef.current) {
+      setLocalSearch(searchQuery || '')
+    }
+  }, [searchQuery])
 
   // debounce localSearch -> debounced
   useEffect(() => {
-    const t = setTimeout(() => setDebounced(localSearch.trim()), 300)
+    const t = setTimeout(() => {
+      setDebounced(localSearch.trim())
+      isUserInputRef.current = true
+    }, 300)
     return () => clearTimeout(t)
   }, [localSearch])
 
-  // auto navigate when debounced changes (but only if user typed — avoids initial sync)
+  // auto navigate when debounced changes
   useEffect(() => {
-    if (!debounced) return
+    if (!debounced || !isUserInputRef.current) return
+    
     setSearchQuery(debounced)
     navigate('/shop?search=' + encodeURIComponent(debounced), { replace: true })
-    // we intentionally do not close search on typed navigation
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounced])
+    
+    // Reset the flag after handling the update
+    isUserInputRef.current = false
+  }, [debounced, navigate, setSearchQuery])
 
   const handleSearchSubmit = (e) => {
     e.preventDefault()
@@ -49,13 +95,18 @@ const MainBar = () => {
   const handleSearchToggle = () => {
     setIsSearchOpen(prev => {
       const next = !prev
-      if (next) setTimeout(() => inputRef.current?.focus(), 0)
-      else {
+      if (next) {
+        setTimeout(() => inputRef.current?.focus(), 0)
+      } else {
         setLocalSearch('')
         setSearchQuery('')
       }
       return next
     })
+  }
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(prev => !prev)
   }
 
   // Book-specific mobile nav items
@@ -78,10 +129,10 @@ const MainBar = () => {
         </Link>
 
         {/* Search area */}
-        <div className={styles.searchContainer}>
+        <div className={`${styles.searchContainer} ${isSearchOpen ? styles.active : ''}`}>
           <form
             onSubmit={handleSearchSubmit}
-            className={`${styles.searchBar} ${isSearchOpen ? styles.searchOpen : ''}`}
+            className={styles.searchBar}
             role="search"
             aria-label="Site search"
           >
@@ -107,7 +158,7 @@ const MainBar = () => {
             aria-label="Toggle search"
             title="Search"
           >
-            <Search size={18} />
+            {isSearchOpen ? <X size={18} /> : <Search size={18} />}
           </button>
         </div>
 
@@ -135,7 +186,7 @@ const MainBar = () => {
 
           <button
             className={styles.mobileMenuButton}
-            onClick={() => setIsMobileMenuOpen(prev => !prev)}
+            onClick={toggleMobileMenu}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isMobileMenuOpen}
           >
@@ -149,33 +200,34 @@ const MainBar = () => {
         Free delivery on orders over £30, otherwise £3.99
       </div>
 
-      {/* Mobile nav - Updated with book categories */}
-      {isMobileMenuOpen && (
-        <div className={styles.mobileNav}>
-          <nav className={styles.mobileNavInner} aria-label="Mobile menu">
-            {mobileNavItems.map((item) => (
-              <Link 
-                key={item.path} 
-                to={item.path} 
-                className={styles.mobileNavLink}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
-            {/* Admin link for admin users */}
-            {user && user.role === 'admin' && (
-              <Link 
-                to="/admin" 
-                className={`${styles.mobileNavLink} ${styles.adminLink}`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Admin Panel
-              </Link>
-            )}
-          </nav>
-        </div>
-      )}
+      {/* Mobile nav - Fixed with ref and className */}
+      <div 
+        ref={mobileMenuRef}
+        className={`${styles.mobileNav} ${isMobileMenuOpen ? styles.open : ''}`}
+      >
+        <nav className={styles.mobileNavInner} aria-label="Mobile menu">
+          {mobileNavItems.map((item) => (
+            <Link 
+              key={item.path} 
+              to={item.path} 
+              className={styles.mobileNavLink}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
+          {/* Admin link for admin users */}
+          {user && user.role === 'admin' && (
+            <Link 
+              to="/admin" 
+              className={`${styles.mobileNavLink} ${styles.adminLink}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Admin Panel
+            </Link>
+          )}
+        </nav>
+      </div>
     </div>
   )
 }

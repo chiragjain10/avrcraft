@@ -16,6 +16,7 @@ import {
   Calendar
 } from 'lucide-react'
 import { useCart } from '../../contexts/CartContext'
+import { useWishlist } from '../../contexts/WishlistContext' // Make sure this is the correct path
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../../utils/firebase/config'
 import { useAuth } from '../../contexts/AuthContext'
@@ -25,15 +26,17 @@ const ProductDetailPage = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { addToCart } = useCart()
-  const { isAuthenticated } = useAuth()
+  const { items: wishlistItems, addToWishlist, removeFromWishlist, loading: wishlistLoading } = useWishlist()
+  const { user, isAuthenticated } = useAuth()
   
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
-  const [isInWishlist, setIsInWishlist] = useState(false)
   const [addedToCart, setAddedToCart] = useState(false)
+  const [activeTab, setActiveTab] = useState('details')
+  const [isAddingToWishlist, setIsAddingToWishlist] = useState(false)
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -64,6 +67,36 @@ const ProductDetailPage = () => {
 
     fetchProduct()
   }, [id])
+
+  // Check if product is in wishlist
+  const isInWishlist = () => {
+    if (!product || wishlistLoading) return false
+    return wishlistItems.some(item => item.id === product.id)
+  }
+
+  const handleAddToWishlist = async () => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: `/product/${id}` } })
+      return
+    }
+
+    if (!product) return
+
+    try {
+      setIsAddingToWishlist(true)
+      
+      if (isInWishlist()) {
+        await removeFromWishlist(product.id)
+      } else {
+        await addToWishlist(product)
+      }
+    } catch (error) {
+      console.error('Error toggling wishlist:', error)
+      alert('Failed to update wishlist. Please try again.')
+    } finally {
+      setIsAddingToWishlist(false)
+    }
+  }
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
@@ -132,7 +165,9 @@ const ProductDetailPage = () => {
   // Use actual images from Firebase or fallback
   const productImages = product.images && product.images.length > 0 
     ? product.images 
-    : [product.imageUrl].filter(Boolean)
+    : product.imageUrl 
+      ? [product.imageUrl] 
+      : []
 
   return (
     <div className={styles.productDetail}>
@@ -149,7 +184,7 @@ const ProductDetailPage = () => {
 
       <div className={styles.container}>
         <div className={styles.productLayout}>
-          {/* Product Images */}
+          {/* Product Images - FIXED HEIGHT */}
           <div className={styles.imageSection}>
             <div className={styles.mainImage}>
               {productImages.length > 0 ? (
@@ -193,7 +228,7 @@ const ProductDetailPage = () => {
             )}
           </div>
 
-          {/* Product Info */}
+          {/* Product Info - SCROLLABLE */}
           <div className={styles.infoSection}>
             <div className={styles.productHeader}>
               <button 
@@ -206,12 +241,17 @@ const ProductDetailPage = () => {
               
               <div className={styles.headerActions}>
                 <button 
-                  className={`${styles.wishlistButton} ${isInWishlist ? styles.inWishlist : ''}`}
-                  onClick={() => setIsInWishlist(!isInWishlist)}
+                  className={`${styles.wishlistButton} ${isInWishlist() ? styles.inWishlist : ''}`}
+                  onClick={handleAddToWishlist}
+                  disabled={isAddingToWishlist || wishlistLoading}
+                  aria-label={isInWishlist() ? 'Remove from wishlist' : 'Add to wishlist'}
                 >
-                  <Heart size={20} />
+                  <Heart 
+                    size={20} 
+                    fill={isInWishlist() ? "currentColor" : "none"} 
+                  />
                 </button>
-                <button className={styles.shareButton} onClick={handleShare}>
+                <button className={styles.shareButton} onClick={handleShare} aria-label="Share product">
                   <Share2 size={20} />
                 </button>
               </div>
@@ -262,7 +302,7 @@ const ProductDetailPage = () => {
 
             {/* Description */}
             <div className={styles.descriptionSection}>
-              <p>{product.description}</p>
+              <p dangerouslySetInnerHTML={{ __html: product.description }}></p>
               
               {product.tags && product.tags.length > 0 && (
                 <div className={styles.tagList}>
@@ -302,6 +342,7 @@ const ProductDetailPage = () => {
                     onClick={() => handleQuantityChange(-1)}
                     disabled={quantity <= 1}
                     className={styles.quantityButton}
+                    aria-label="Decrease quantity"
                   >
                     <Minus size={16} />
                   </button>
@@ -310,6 +351,7 @@ const ProductDetailPage = () => {
                     onClick={() => handleQuantityChange(1)}
                     disabled={quantity >= Math.min(product.stock, 10)}
                     className={styles.quantityButton}
+                    aria-label="Increase quantity"
                   >
                     <Plus size={16} />
                   </button>
@@ -342,7 +384,13 @@ const ProductDetailPage = () => {
               </button>
               
               {product.stock > 0 && (
-                <button className={styles.buyNowButton}>
+                <button 
+                  className={styles.buyNowButton}
+                  onClick={() => {
+                    handleAddToCart()
+                    setTimeout(() => navigate('/checkout'), 100)
+                  }}
+                >
                   Buy Now
                 </button>
               )}
@@ -375,77 +423,110 @@ const ProductDetailPage = () => {
           </div>
         </div>
 
-        {/* Product Details Tabs */}
+        {/* Product Details Tabs - FIXED */}
         <div className={styles.detailsTabs}>
           <div className={styles.tabHeaders}>
-            <button className={`${styles.tabHeader} ${styles.tabActive}`}>
+            <button 
+              className={`${styles.tabHeader} ${activeTab === 'details' ? styles.active : ''}`}
+              onClick={() => setActiveTab('details')}
+            >
               Product Details
             </button>
-            <button className={styles.tabHeader}>
-              Specifications
-            </button>
-            <button className={styles.tabHeader}>
+            <button 
+              className={`${styles.tabHeader} ${activeTab === 'shipping' ? styles.active : ''}`}
+              onClick={() => setActiveTab('shipping')}
+            >
               Shipping & Returns
             </button>
-            {product.reviewCount > 0 && (
-              <button className={styles.tabHeader}>
-                Reviews ({product.reviewCount})
-              </button>
-            )}
           </div>
 
           <div className={styles.tabContent}>
-            <div className={styles.detailsGrid}>
-              {product.category && (
-                <div className={styles.detailItem}>
-                  <strong>Category:</strong>
-                  <span>{product.category}</span>
-                </div>
-              )}
-              {product.author && (
-                <div className={styles.detailItem}>
-                  <strong>Author:</strong>
-                  <span>{product.author}</span>
-                </div>
-              )}
-              {product.pages && (
-                <div className={styles.detailItem}>
-                  <strong>Pages:</strong>
-                  <span>{product.pages}</span>
-                </div>
-              )}
-              {product.language && (
-                <div className={styles.detailItem}>
-                  <strong>Language:</strong>
-                  <span>{product.language}</span>
-                </div>
-              )}
-              {product.publisher && (
-                <div className={styles.detailItem}>
-                  <strong>Publisher:</strong>
-                  <span>{product.publisher}</span>
-                </div>
-              )}
-              {product.publishedDate && (
-                <div className={styles.detailItem}>
-                  <strong>Published:</strong>
-                  <span>{new Date(product.publishedDate).getFullYear()}</span>
-                </div>
-              )}
-              {product.isbn && (
-                <div className={styles.detailItem}>
-                  <strong>ISBN:</strong>
-                  <span>{product.isbn}</span>
-                </div>
-              )}
-              {product.createdAt && (
-                <div className={styles.detailItem}>
-                  <Calendar size={16} />
-                  <strong>Added:</strong>
-                  <span>{new Date(product.createdAt.seconds * 1000).toLocaleDateString()}</span>
-                </div>
-              )}
-            </div>
+            {activeTab === 'details' ? (
+              <div className={styles.detailsGrid}>
+                {product.category && (
+                  <div className={styles.detailItem}>
+                    <strong>Category:</strong>
+                    <span>{product.category}</span>
+                  </div>
+                )}
+                {product.author && (
+                  <div className={styles.detailItem}>
+                    <strong>Author:</strong>
+                    <span>{product.author}</span>
+                  </div>
+                )}
+                {product.pages && (
+                  <div className={styles.detailItem}>
+                    <strong>Pages:</strong>
+                    <span>{product.pages}</span>
+                  </div>
+                )}
+                {product.language && (
+                  <div className={styles.detailItem}>
+                    <strong>Language:</strong>
+                    <span>{product.language}</span>
+                  </div>
+                )}
+                {product.publisher && (
+                  <div className={styles.detailItem}>
+                    <strong>Publisher:</strong>
+                    <span>{product.publisher}</span>
+                  </div>
+                )}
+                {product.publishedDate && (
+                  <div className={styles.detailItem}>
+                    <strong>Published:</strong>
+                    <span>{new Date(product.publishedDate).getFullYear()}</span>
+                  </div>
+                )}
+                {product.isbn && (
+                  <div className={styles.detailItem}>
+                    <strong>ISBN:</strong>
+                    <span>{product.isbn}</span>
+                  </div>
+                )}
+                {product.createdAt && (
+                  <div className={styles.detailItem}>
+                    <Calendar size={16} />
+                    <strong>Added:</strong>
+                    <span>{new Date(product.createdAt.seconds * 1000).toLocaleDateString()}</span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className={styles.shippingContent}>
+                <h3>Shipping Information</h3>
+                <p>We offer worldwide shipping. Here are our estimated delivery times:</p>
+                <ul>
+                  <li><strong>Standard Shipping:</strong> 5-7 business days</li>
+                  <li><strong>Express Shipping:</strong> 2-3 business days</li>
+                  <li><strong>International Shipping:</strong> 10-15 business days</li>
+                </ul>
+                
+                <h3>Shipping Costs</h3>
+                <ul>
+                  <li>Free shipping on orders over ₹499</li>
+                  <li>Standard shipping: ₹49 for orders below ₹499</li>
+                  <li>Express shipping: ₹99 (available for select locations)</li>
+                </ul>
+                
+                <h3>Returns Policy</h3>
+                <p>We offer a 30-day return policy for all products:</p>
+                <ul>
+                  <li>Products must be in original condition with all tags attached</li>
+                  <li>Return shipping is free for defective or incorrect items</li>
+                  <li>Refunds are processed within 5-7 business days after receiving the return</li>
+                  <li>Digital products and personalized items are non-returnable</li>
+                </ul>
+                
+                <h3>Contact Us</h3>
+                <p>For any shipping or return inquiries, please contact our customer service at:</p>
+                <ul>
+                  <li>Email: support@avrcraft.com</li>
+                  <li>Phone: +91-XXXXXX-XXXX (Mon-Sat, 10 AM - 7 PM)</li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>

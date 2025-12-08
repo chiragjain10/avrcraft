@@ -1,252 +1,327 @@
-import React, { useState, useEffect } from 'react'
-import { ChevronDown, ChevronUp } from 'lucide-react'
-import { collection, getDocs, query, where } from 'firebase/firestore'
-import { db } from '../../../utils/firebase/config'
-import styles from './ProductFilters.module.css'
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../../utils/firebase/config';
+import styles from './ProductFilters.module.css';
 
-const ProductFilters = ({ filters, onFilterChange }) => {
+const ProductFilters = ({ categories = [], filters, onFilterChange }) => {
   const [openSections, setOpenSections] = useState({
     category: true,
-    price: true,
-    rating: true,
-    availability: true
-  })
+    author: false,
+    price: false,
+    rating: false,
+    format: false,
+    availability: false
+  });
+  const [authors, setAuthors] = useState([]);
+  const [loadingAuthors, setLoadingAuthors] = useState(true);
 
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  // Firebase se categories fetch karo
+  // Fetch authors from products
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchAuthors = async () => {
       try {
-        setLoading(true)
-        const categoriesQuery = query(
-          collection(db, 'categories'),
-          where('isActive', '==', true)
-        )
-        
-        const querySnapshot = await getDocs(categoriesQuery)
-        const categoriesList = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }))
+        setLoadingAuthors(true);
+        const productsQuery = collection(db, 'products');
+        const querySnapshot = await getDocs(productsQuery);
 
-        // Agar koi categories nahi mile toh fallback data
-        if (categoriesList.length === 0) {
-          setCategories(getFallbackCategories())
-        } else {
-          setCategories(categoriesList)
-        }
+        const authorMap = new Map();
+        querySnapshot.docs.forEach(doc => {
+          const product = doc.data();
+          if (product.author && product.isActive !== false) {
+            const authorName = product.author.trim();
+            if (authorName) {
+              const count = authorMap.get(authorName) || 0;
+              authorMap.set(authorName, count + 1);
+            }
+          }
+        });
 
+        const authorsData = Array.from(authorMap.entries())
+          .map(([name, count]) => ({
+            id: name.toLowerCase().replace(/\s+/g, '-'),
+            name,
+            count
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        setAuthors(authorsData);
       } catch (error) {
-        console.error('Firebase se categories fetch karne mein error:', error)
-        setCategories(getFallbackCategories())
+        console.error('Error fetching authors:', error);
+        setAuthors([]);
       } finally {
-        setLoading(false)
+        setLoadingAuthors(false);
       }
-    }
+    };
 
-    fetchCategories()
-  }, [])
-
-  // Fallback categories - Real AVR Crafts categories
-  const getFallbackCategories = () => [
-    { id: '1', name: 'Handicrafts', description: 'Traditional handcrafted items' },
-    { id: '2', name: 'Books', description: 'Educational and literature books' },
-    { id: '3', name: 'Ethnic Wears', description: 'Traditional clothing and accessories' }
-  ]
+    fetchAuthors();
+  }, []);
 
   const toggleSection = (section) => {
     setOpenSections(prev => ({
       ...prev,
       [section]: !prev[section]
-    }))
-  }
+    }));
+  };
 
   const handleCategoryChange = (categoryId) => {
+    console.log('Category changed to:', categoryId);
     onFilterChange({
       ...filters,
-      category: filters.category === categoryId ? '' : categoryId
-    })
-  }
+      category: categoryId
+    });
+  };
+
+  const handleAuthorChange = (author) => {
+    onFilterChange({
+      ...filters,
+      author: filters.author === author ? '' : author
+    });
+  };
 
   const handlePriceChange = (min, max) => {
     onFilterChange({
       ...filters,
       priceRange: [min, max]
-    })
-  }
+    });
+  };
 
   const handleRatingChange = (rating) => {
     onFilterChange({
       ...filters,
       rating: filters.rating === rating ? 0 : rating
-    })
-  }
+    });
+  };
+
+  const handleFormatChange = (format) => {
+    onFilterChange({
+      ...filters,
+      format: filters.format === format ? '' : format
+    });
+  };
 
   const handleAvailabilityChange = (availability) => {
     onFilterChange({
       ...filters,
-      availability
-    })
-  }
-
-  // Clear all filters
-  const handleClearFilters = () => {
-    onFilterChange({
-      category: '',
-      priceRange: [0, 100000],
-      rating: 0,
-      availability: 'all'
-    })
-  }
+      availability: filters.availability === availability ? 'all' : availability
+    });
+  };
 
   return (
     <div className={styles.filters}>
-      {/* Filters Header */}
-      <div className={styles.filtersHeader}>
-        <h3 className={styles.filtersTitle}>Filters</h3>
-        <button 
-          onClick={handleClearFilters}
-          className={styles.clearFilters}
+      {/* Categories Section */}
+      <div className={styles.section}>
+        <button
+          className={styles.sectionHeader}
+          onClick={() => toggleSection('category')}
+          type="button"
         >
-          Clear All
+          <span className={styles.sectionTitle}>Product Categories</span>
+          {openSections.category ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
         </button>
+
+        {openSections.category && (
+          <div className={styles.sectionContent}>
+            {/* All Categories option */}
+            <label className={styles.option}>
+              <input
+                type="radio"
+                name="category"
+                checked={!filters.category}
+                onChange={() => handleCategoryChange('')}
+                className={styles.radio}
+              />
+              <span className={styles.customRadio}></span>
+              <span className={styles.optionText}>All Categories</span>
+            </label>
+
+            {/* Individual categories */}
+            {categories.map(category => {
+              const categoryId = category.id || category.name;
+              const categoryName = category.name || category.categoryName || 'Unnamed Category';
+
+              return (
+                <label key={categoryId} className={styles.option}>
+                  <input
+                    type="radio"
+                    name="category"
+                    checked={filters.category === categoryId || filters.category === categoryName}
+                    onChange={() => handleCategoryChange(categoryId)}
+                    className={styles.radio}
+                  />
+                  <span className={styles.customRadio}></span>
+                  <span className={styles.optionText}>
+                    {categoryName}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      {/* Category Filter */}
-      <div className={styles.filterSection}>
-        <button 
-          className={styles.filterHeader}
-          onClick={() => toggleSection('category')}
+      {/* Authors Section - FIXED */}
+      <div className={styles.section}>
+        <button
+          className={styles.sectionHeader}
+          onClick={() => toggleSection('author')}
+          type="button"
         >
-          <span>Product Categories</span>
-          {openSections.category ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          <span className={styles.sectionTitle}>Authors</span>
+          {openSections.author ? (
+            <ChevronUp size={18} />
+          ) : (
+            <ChevronDown size={18} />
+          )}
         </button>
-        
-        {openSections.category && (
-          <div className={styles.filterOptions}>
-            {loading ? (
-              <div className={styles.loading}>Loading categories...</div>
+
+        {openSections.author && (
+          <div className={styles.sectionContent}>
+            {loadingAuthors ? (
+              <div className={styles.loading}>Loading authors...</div>
+            ) : authors.length === 0 ? (
+              <div className={styles.noData}>No authors found</div>
             ) : (
-              categories.map(category => (
-                <label key={category.id} className={styles.filterOption}>
+              <>
+                {/* "All Authors" option */}
+                <label className={styles.option}>
                   <input
-                    type="checkbox"
-                    checked={filters.category === category.id}
-                    onChange={() => handleCategoryChange(category.id)}
-                    className={styles.filterCheckbox}
+                    type="radio"
+                    name="author"
+                    checked={!filters.author}
+                    onChange={() => handleAuthorChange('')}
+                    className={styles.radio}
                   />
-                  <span className={styles.checkboxCustom}></span>
-                  <span className={styles.optionLabel}>{category.name}</span>
-                  {category.description && (
-                    <span className={styles.optionDescription}>({category.description})</span>
-                  )}
+                  <span className={styles.customRadio}></span>
+                  <span className={styles.optionText}>All Authors</span>
                 </label>
-              ))
+
+                {/* Individual authors */}
+                {authors.slice(0, 10).map(author => (
+                  <label key={author.id} className={styles.option}>
+                    <input
+                      type="radio"
+                      name="author"
+                      checked={filters.author === author.name}
+                      onChange={() => handleAuthorChange(author.name)}
+                      className={styles.radio}
+                    />
+                    <span className={styles.customRadio}></span>
+                    <span className={styles.optionText}>{author.name}</span>
+                    <span className={styles.count}>({author.count})</span>
+                  </label>
+                ))}
+              </>
             )}
           </div>
         )}
       </div>
 
-      {/* Price Range Filter */}
-      <div className={styles.filterSection}>
-        <button 
-          className={styles.filterHeader}
+      {/* Price Range Section */}
+      <div className={styles.section}>
+        <button
+          className={styles.sectionHeader}
           onClick={() => toggleSection('price')}
+          type="button"
         >
-          <span>Price Range (₹)</span>
-          {openSections.price ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          <span className={styles.sectionTitle}>Price Range (₹)</span>
+          {openSections.price ? (
+            <ChevronUp size={18} />
+          ) : (
+            <ChevronDown size={18} />
+          )}
         </button>
-        
+
         {openSections.price && (
-          <div className={styles.filterOptions}>
-            <div className={styles.priceRange}>
-              <div className={styles.priceInputs}>
-                <div className={styles.priceInput}>
-                  <label>Min</label>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    value={filters.priceRange[0] || ''}
-                    onChange={(e) => handlePriceChange(Number(e.target.value) || 0, filters.priceRange[1])}
-                    className={styles.priceField}
-                  />
-                </div>
-                <div className={styles.priceInput}>
-                  <label>Max</label>
-                  <input
-                    type="number"
-                    placeholder="100000"
-                    value={filters.priceRange[1] || ''}
-                    onChange={(e) => handlePriceChange(filters.priceRange[0], Number(e.target.value) || 100000)}
-                    className={styles.priceField}
-                  />
-                </div>
+          <div className={styles.sectionContent}>
+            <div className={styles.priceInputs}>
+              <div className={styles.priceInput}>
+                <label>Min</label>
+                <input
+                  type="number"
+                  value={filters.priceRange[0]}
+                  onChange={(e) => handlePriceChange(Number(e.target.value), filters.priceRange[1])}
+                  min="0"
+                  max="1000"
+                  className={styles.priceField}
+                />
               </div>
-              
-              <div className={styles.pricePresets}>
-                <button 
-                  onClick={() => handlePriceChange(0, 500)}
-                  className={`${styles.pricePreset} ${filters.priceRange[0] === 0 && filters.priceRange[1] === 500 ? styles.active : ''}`}
-                >
-                  Under ₹500
-                </button>
-                <button 
-                  onClick={() => handlePriceChange(500, 2000)}
-                  className={`${styles.pricePreset} ${filters.priceRange[0] === 500 && filters.priceRange[1] === 2000 ? styles.active : ''}`}
-                >
-                  ₹500 - ₹2,000
-                </button>
-                <button 
-                  onClick={() => handlePriceChange(2000, 5000)}
-                  className={`${styles.pricePreset} ${filters.priceRange[0] === 2000 && filters.priceRange[1] === 5000 ? styles.active : ''}`}
-                >
-                  ₹2,000 - ₹5,000
-                </button>
-                <button 
-                  onClick={() => handlePriceChange(5000, 100000)}
-                  className={`${styles.pricePreset} ${filters.priceRange[0] === 5000 && filters.priceRange[1] === 100000 ? styles.active : ''}`}
-                >
-                  Over ₹5,000
-                </button>
+              <div className={styles.priceInput}>
+                <label>Max</label>
+                <input
+                  type="number"
+                  value={filters.priceRange[1]}
+                  onChange={(e) => handlePriceChange(filters.priceRange[0], Number(e.target.value))}
+                  min="0"
+                  max="1000"
+                  className={styles.priceField}
+                />
               </div>
+            </div>
+
+            <div className={styles.pricePresets}>
+              <button
+                onClick={() => handlePriceChange(0, 200)}
+                className={`${styles.preset} ${filters.priceRange[0] === 0 && filters.priceRange[1] === 200 ? styles.active : ''}`}
+                type="button"
+              >
+                Under ₹200
+              </button>
+              <button
+                onClick={() => handlePriceChange(200, 500)}
+                className={`${styles.preset} ${filters.priceRange[0] === 200 && filters.priceRange[1] === 500 ? styles.active : ''}`}
+                type="button"
+              >
+                ₹200 - ₹500
+              </button>
+              <button
+                onClick={() => handlePriceChange(500, 1000)}
+                className={`${styles.preset} ${filters.priceRange[0] === 500 && filters.priceRange[1] === 1000 ? styles.active : ''}`}
+                type="button"
+              >
+                ₹500 - ₹1000
+              </button>
             </div>
           </div>
         )}
       </div>
 
-      {/* Rating Filter */}
-      <div className={styles.filterSection}>
-        <button 
-          className={styles.filterHeader}
+      {/* Rating Section */}
+      <div className={styles.section}>
+        <button
+          className={styles.sectionHeader}
           onClick={() => toggleSection('rating')}
+          type="button"
         >
-          <span>Customer Rating</span>
-          {openSections.rating ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          <span className={styles.sectionTitle}>Customer Rating</span>
+          {openSections.rating ? (
+            <ChevronUp size={18} />
+          ) : (
+            <ChevronDown size={18} />
+          )}
         </button>
-        
+
         {openSections.rating && (
-          <div className={styles.filterOptions}>
+          <div className={styles.sectionContent}>
             {[4, 3, 2, 1].map(rating => (
-              <label key={rating} className={styles.filterOption}>
+              <label key={rating} className={styles.option}>
                 <input
-                  type="checkbox"
+                  type="radio"
+                  name="rating"
                   checked={filters.rating === rating}
                   onChange={() => handleRatingChange(rating)}
-                  className={styles.filterCheckbox}
+                  className={styles.radio}
                 />
-                <span className={styles.checkboxCustom}></span>
-                <span className={styles.ratingStars}>
+                <span className={styles.customRadio}></span>
+                <div className={styles.stars}>
                   {[...Array(5)].map((_, i) => (
-                    <span 
+                    <Star
                       key={i}
+                      size={14}
                       className={i < rating ? styles.starFilled : styles.starEmpty}
-                    >
-                      ★
-                    </span>
+                      fill={i < rating ? "#2c3e50" : "none"}
+                    />
                   ))}
-                </span>
+                </div>
                 <span className={styles.ratingText}>& above</span>
               </label>
             ))}
@@ -254,87 +329,106 @@ const ProductFilters = ({ filters, onFilterChange }) => {
         )}
       </div>
 
-      {/* Availability Filter */}
-      <div className={styles.filterSection}>
-        <button 
-          className={styles.filterHeader}
-          onClick={() => toggleSection('availability')}
+      {/* Format Section */}
+      <div className={styles.section}>
+        <button
+          className={styles.sectionHeader}
+          onClick={() => toggleSection('format')}
+          type="button"
         >
-          <span>Availability</span>
-          {openSections.availability ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          <span className={styles.sectionTitle}>Format</span>
+          {openSections.format ? (
+            <ChevronUp size={18} />
+          ) : (
+            <ChevronDown size={18} />
+          )}
         </button>
-        
+
+        {openSections.format && (
+          <div className={styles.sectionContent}>
+            {/* "All Formats" option */}
+            <label className={styles.option}>
+              <input
+                type="radio"
+                name="format"
+                checked={!filters.format}
+                onChange={() => handleFormatChange('')}
+                className={styles.radio}
+              />
+              <span className={styles.customRadio}></span>
+              <span className={styles.optionText}>All Formats</span>
+            </label>
+
+            {['Paperback', 'Hardcover', 'Ebook', 'Audiobook'].map(format => (
+              <label key={format} className={styles.option}>
+                <input
+                  type="radio"
+                  name="format"
+                  checked={filters.format === format.toLowerCase()}
+                  onChange={() => handleFormatChange(format.toLowerCase())}
+                  className={styles.radio}
+                />
+                <span className={styles.customRadio}></span>
+                <span className={styles.optionText}>{format}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Availability Section */}
+      <div className={styles.section}>
+        <button
+          className={styles.sectionHeader}
+          onClick={() => toggleSection('availability')}
+          type="button"
+        >
+          <span className={styles.sectionTitle}>Availability</span>
+          {openSections.availability ? (
+            <ChevronUp size={18} />
+          ) : (
+            <ChevronDown size={18} />
+          )}
+        </button>
+
         {openSections.availability && (
-          <div className={styles.filterOptions}>
-            <label className={styles.filterOption}>
+          <div className={styles.sectionContent}>
+            <label className={styles.option}>
               <input
                 type="radio"
                 name="availability"
                 checked={filters.availability === 'all'}
                 onChange={() => handleAvailabilityChange('all')}
-                className={styles.filterRadio}
+                className={styles.radio}
               />
-              <span className={styles.radioCustom}></span>
-              <span className={styles.optionLabel}>All Products</span>
+              <span className={styles.customRadio}></span>
+              <span className={styles.optionText}>All Books</span>
             </label>
-            <label className={styles.filterOption}>
+            <label className={styles.option}>
               <input
                 type="radio"
                 name="availability"
                 checked={filters.availability === 'in-stock'}
                 onChange={() => handleAvailabilityChange('in-stock')}
-                className={styles.filterRadio}
+                className={styles.radio}
               />
-              <span className={styles.radioCustom}></span>
-              <span className={styles.optionLabel}>In Stock</span>
+              <span className={styles.customRadio}></span>
+              <span className={styles.optionText}>In Stock</span>
             </label>
-            <label className={styles.filterOption}>
+            <label className={styles.option}>
               <input
                 type="radio"
                 name="availability"
                 checked={filters.availability === 'out-of-stock'}
                 onChange={() => handleAvailabilityChange('out-of-stock')}
-                className={styles.filterRadio}
+                className={styles.radio}
               />
-              <span className={styles.radioCustom}></span>
-              <span className={styles.optionLabel}>Out of Stock</span>
+              <span className={styles.customRadio}></span>
+              <span className={styles.optionText}>Out of Stock</span>
             </label>
           </div>
         )}
       </div>
-
-      {/* Active Filters Display */}
-      {(filters.category || filters.rating > 0 || filters.priceRange[0] > 0 || filters.priceRange[1] < 100000 || filters.availability !== 'all') && (
-        <div className={styles.activeFilters}>
-          <h4>Active Filters:</h4>
-          <div className={styles.activeFilterTags}>
-            {filters.category && (
-              <span className={styles.activeFilterTag}>
-                Category: {categories.find(cat => cat.id === filters.category)?.name}
-                <button onClick={() => handleCategoryChange('')}>×</button>
-              </span>
-            )}
-            {filters.rating > 0 && (
-              <span className={styles.activeFilterTag}>
-                Rating: {filters.rating}+ stars
-                <button onClick={() => handleRatingChange(0)}>×</button>
-              </span>
-            )}
-            {(filters.priceRange[0] > 0 || filters.priceRange[1] < 100000) && (
-              <span className={styles.activeFilterTag}>
-                Price: ₹{filters.priceRange[0]} - ₹{filters.priceRange[1]}
-                <button onClick={() => handlePriceChange(0, 100000)}>×</button>
-              </span>
-            )}
-            {filters.availability !== 'all' && (
-              <span className={styles.activeFilterTag}>
-                {filters.availability === 'in-stock' ? 'In Stock' : 'Out of Stock'}
-                <button onClick={() => handleAvailabilityChange('all')}>×</button>
-              </span>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

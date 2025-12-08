@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { collection, getDocs, query, orderBy } from 'firebase/firestore'
-import { db } from '../../../utils/firebase/config' 
+import { useNavigate } from 'react-router-dom'
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore'
+import { db } from '../../../utils/firebase/config'
 import styles from './Categories.module.css'
 
 const Categories = () => {
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const navigate = useNavigate()
 
   // Fetch categories from Firestore
   useEffect(() => {
@@ -15,28 +16,49 @@ const Categories = () => {
       try {
         setLoading(true)
         setError(null)
-        
-        // Query to get only active categories, ordered by name
-        const categoriesQuery = query(collection(db, 'categories'), orderBy('name', 'asc'))
-        
+
+        // Query to get only active categories
+        const categoriesQuery = query(
+          collection(db, 'categories'),
+          where('isActive', '==', true),
+          orderBy('name', 'asc')
+        )
+
         const querySnapshot = await getDocs(categoriesQuery)
         const categoriesData = querySnapshot.docs.map(doc => {
-          const data = doc.data();
-          console.log('Category Data:', data); // Debug log
+          const data = doc.data()
           return {
             id: doc.id,
-            ...data,
-            // Generate SEO-friendly path from category name
-            path: `/${data.name.toLowerCase().replace(/\s+/g, '-')}`
+            name: data.name || data.categoryName || 'Unnamed Category',
+            description: data.description || '',
+            image: data.image || data.imageUrl || data.coverImage || '',
+            isNew: data.isNew || false,
+            isActive: data.isActive || true,
+            slug: data.slug || data.name.toLowerCase().replace(/\s+/g, '-'),
+            productCount: data.productCount || 0
           }
         })
         
-        console.log('All Categories:', categoriesData); // Debug log
+        console.log('Loaded categories:', categoriesData)
         setCategories(categoriesData)
       } catch (err) {
         console.error('Error fetching categories:', err)
-        setError('Failed to load categories')
-        setCategories([])
+        setError('Failed to load categories. Please try again later.')
+        // Fallback categories
+        setCategories([
+          { id: 'crime', name: 'Crime & Thriller', image: '', isNew: true },
+          { id: 'self-help', name: 'Self-Help', image: '', isNew: false },
+          { id: 'childrens', name: 'Children', image: '', isNew: true },
+          { id: 'poetry', name: 'Poetry', image: '', isNew: false },
+          { id: 'trading', name: 'Trading', image: '', isNew: true },
+          { id: 'health', name: 'Health', image: '', isNew: false },
+          { id: 'wealth', name: 'Wealth', image: '', isNew: false },
+          { id: 'hindi', name: 'Hindi', image: '', isNew: false },
+          { id: 'spirituality', name: 'Spirituality', image: '', isNew: true },
+          { id: 'romance', name: 'Romance', image: '', isNew: false },
+          { id: 'business', name: 'Business', image: '', isNew: false },
+          { id: 'fiction', name: 'Fiction', image: '', isNew: true }
+        ])
       } finally {
         setLoading(false)
       }
@@ -45,19 +67,23 @@ const Categories = () => {
     fetchCategories()
   }, [])
 
+  // Handle category click
+  const handleCategoryClick = (categoryId, categoryName) => {
+    const slug = categoryName.toLowerCase().replace(/\s+/g, '-')
+    navigate(`/shop?category=${categoryId}&categoryName=${slug}`)
+  }
+
   // Loading state
   if (loading) {
     return (
       <section className={styles.categories}>
         <div className={styles.container}>
-          {/* Section Header - SHOP BY CATEGORIES */}
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>SHOP BY CATEGORIES</h2>
           </div>
-          
-          {/* Loading skeleton for cards */}
+
           <div className={styles.categoriesGrid}>
-            {[...Array(12)].map((_, index) => (
+            {[...Array(6)].map((_, index) => (
               <div key={index} className={styles.categoryCardLoading}>
                 <div className={styles.imageSkeleton}></div>
                 <div className={styles.titleSkeleton}></div>
@@ -70,33 +96,16 @@ const Categories = () => {
   }
 
   // Error state
-  if (error) {
+  if (error && categories.length === 0) {
     return (
       <section className={styles.categories}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>SHOP BY CATEGORIES</h2>
           </div>
-          
-          <div className={styles.errorMessage}>
-            <p>Unable to load categories. Please try again later.</p>
-          </div>
-        </div>
-      </section>
-    )
-  }
 
-  // Empty state
-  if (categories.length === 0) {
-    return (
-      <section className={styles.categories}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>SHOP BY CATEGORIES</h2>
-          </div>
-          
-          <div className={styles.emptyMessage}>
-            <p>No categories available at the moment. Check back soon!</p>
+          <div className={styles.errorMessage}>
+            <p>{error}</p>
           </div>
         </div>
       </section>
@@ -106,41 +115,39 @@ const Categories = () => {
   return (
     <section className={styles.categories}>
       <div className={styles.container}>
-        {/* Section Header - SHOP BY CATEGORIES */}
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>SHOP BY CATEGORIES</h2>
         </div>
-        
-        {/* Categories Grid - Screenshot style */}
+
         <div className={styles.categoriesGrid}>
           {categories.map((category) => (
-            <Link 
+            <div
               key={category.id}
-              to={category.path} 
               className={styles.categoryCard}
+              onClick={() => handleCategoryClick(category.id, category.name)}
               title={category.description || `Browse ${category.name}`}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => e.key === 'Enter' && handleCategoryClick(category.id, category.name)}
             >
-              {/* Card Background Image - Using 'image' field from Firestore */}
-              <div 
+              <div
                 className={styles.cardImage}
                 style={{
-                  backgroundImage: category.image 
-                    ? `url("${category.image}")` 
-                    : category.imageUrl
-                    ? `url("${category.imageUrl}")`
+                  backgroundImage: category.image
+                    ? `url("${category.image}")`
                     : `linear-gradient(135deg, var(--admin-primary), var(--admin-accent))`
                 }}
               >
-                {/* Overlay Gradient */}
                 <div className={styles.imageOverlay}></div>
-                
-                {/* Category Name */}
                 <div className={styles.cardContent}>
                   <h3 className={styles.categoryName}>{category.name}</h3>
                   {category.isNew && <span className={styles.newBadge}>New</span>}
+                  {category.productCount > 0 && (
+                    <span className={styles.productCount}>{category.productCount} products</span>
+                  )}
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>

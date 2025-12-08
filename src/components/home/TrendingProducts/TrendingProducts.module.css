@@ -90,7 +90,7 @@
 /* Products Grid */
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
 }
 
@@ -413,13 +413,13 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
   .productsGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 992px) {
   .productsGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
   }
   
@@ -469,7 +469,7 @@
 
 @media (max-width: 576px) {
   .productsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 2fr;
     gap: 1rem;
     max-width: 400px;
     margin: 0 auto;
