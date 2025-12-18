@@ -452,53 +452,70 @@
   }
 }
 
-/* Secondary button styles (agar nahi hai to) */
-.secondaryButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--admin-card);
-  color: var(--admin-text);
-  border: 1px solid var(--admin-border);
-  border-radius: 8px;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+/* Products.module.css (Add these styles) */
+
+/* Import Modal */
+.importModal {
+  padding: 20px;
 }
 
-.secondaryButton:hover:not(:disabled) {
-  background: var(--admin-bg);
-  border-color: var(--admin-accent);
-  color: var(--admin-accent);
+.progressContainer {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin: 20px 0;
+  overflow: hidden;
 }
 
-.secondaryButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Primary button styles (agar nahi hai to) */
-.primaryButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+.progressBar {
+  height: 100%;
   background: var(--admin-accent);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  transition: width 0.3s ease;
 }
 
-.primaryButton:hover:not(:disabled) {
-  background: var(--admin-primary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(26, 43, 60, 0.2);
+.importStatus {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.importStatus p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: var(--admin-text);
+}
+
+.progressText {
+  font-weight: 600;
+  color: var(--admin-accent) !important;
+}
+
+.importSummary {
+  margin: 25px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.successIcon {
+  color: #28a745;
+}
+
+.errorIcon {
+  color: #dc3545;
+}
+
+.importActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
 }

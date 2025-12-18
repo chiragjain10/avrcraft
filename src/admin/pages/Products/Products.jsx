@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { 
-  Plus, 
-  Search, 
+import {
+  Plus,
+  Search,
   Filter,
   Edit3,
   Trash2,
@@ -15,6 +15,7 @@ import { adminProducts, adminCategories } from '../../utils/firebase/adminConfig
 import DataTable from '../../components/common/DataTable/DataTable'
 import Modal from '../../components/common/Modal/Modal'
 import ProductForm from '../../components/products/ProductForm/ProductForm'
+import ImportModal from '../../components/products/ImportModal/ImportModal';
 import styles from './Products.module.css'
 
 const Products = () => {
@@ -27,14 +28,52 @@ const Products = () => {
   const [editingProduct, setEditingProduct] = useState(null)
   const [selectedProducts, setSelectedProducts] = useState([])
   const [bulkAction, setBulkAction] = useState('')
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const { addNotification } = useAdmin()
 
   // Fetch products
   useEffect(() => {
     fetchProducts(),
-    fetchCategories()
+      fetchCategories()
   }, [])
+
+  const handleExport = async () => {
+    try {
+      setExporting(true);
+      const result = await adminProducts.exportProducts();
+
+      addNotification({
+        type: 'success',
+        message: `Exported ${result.count} products successfully`
+      });
+
+    } catch (error) {
+      console.error('Export error:', error);
+      addNotification({
+        type: 'error',
+        message: 'Failed to export products'
+      });
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleImportComplete = (result) => {
+    if (result.success) {
+      addNotification({
+        type: 'success',
+        message: `Imported ${result.imported} products successfully`
+      });
+      // Refresh products list
+      fetchProducts();
+      // Close modal after delay
+      setTimeout(() => {
+        setShowImportModal(false);
+      }, 2000);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -70,11 +109,11 @@ const Products = () => {
   // Filter products based on search and category
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.author?.toLowerCase().includes(searchQuery.toLowerCase())
-    
+      product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.author?.toLowerCase().includes(searchQuery.toLowerCase())
+
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
-    
+
     return matchesSearch && matchesCategory
   })
 
@@ -115,7 +154,7 @@ const Products = () => {
       if (editingProduct) {
         // Update existing product
         await adminProducts.updateProduct(editingProduct.id, productData)
-        setProducts(products.map(p => 
+        setProducts(products.map(p =>
           p.id === editingProduct.id ? { ...p, ...productData } : p
         ))
         addNotification({
@@ -148,7 +187,7 @@ const Products = () => {
       // Implement bulk actions (delete, activate, deactivate)
       if (bulkAction === 'delete') {
         if (!window.confirm(`Are you sure you want to delete ${selectedProducts.length} products?`)) return
-        
+
         for (const productId of selectedProducts) {
           await adminProducts.deleteProduct(productId)
         }
@@ -158,7 +197,7 @@ const Products = () => {
           message: `${selectedProducts.length} products deleted successfully`
         })
       }
-      
+
       setSelectedProducts([])
       setBulkAction('')
     } catch (error) {
@@ -241,11 +280,10 @@ const Products = () => {
       key: 'stock',
       label: 'Stock',
       render: (product) => (
-        <span className={`${styles.stockStatus} ${
-          product.stock > 10 ? styles.inStock : 
-          product.stock > 0 ? styles.lowStock : 
-          styles.outOfStock
-        }`}>
+        <span className={`${styles.stockStatus} ${product.stock > 10 ? styles.inStock :
+          product.stock > 0 ? styles.lowStock :
+            styles.outOfStock
+          }`}>
           {product.stock || 0}
         </span>
       ),
@@ -255,9 +293,8 @@ const Products = () => {
       key: 'status',
       label: 'Status',
       render: (product) => (
-        <span className={`${styles.status} ${
-          product.isActive ? styles.active : styles.inactive
-        }`}>
+        <span className={`${styles.status} ${product.isActive ? styles.active : styles.inactive
+          }`}>
           {product.isActive ? 'Active' : 'Inactive'}
         </span>
       )
@@ -267,21 +304,21 @@ const Products = () => {
       label: 'Actions',
       render: (product) => (
         <div className={styles.actions}>
-          <button 
+          <button
             className={styles.actionButton}
             onClick={() => handleEditProduct(product)}
             title="Edit product"
           >
             <Edit3 size={16} />
           </button>
-          <button 
+          <button
             className={`${styles.actionButton} ${styles.deleteButton}`}
             onClick={() => handleDeleteProduct(product.id)}
             title="Delete product"
           >
             <Trash2 size={16} />
           </button>
-          <button 
+          <button
             className={styles.actionButton}
             title="View details"
           >
@@ -303,17 +340,24 @@ const Products = () => {
             Manage your products, inventory, and pricing
           </p>
         </div>
-        
+
         <div className={styles.headerActions}>
-          <button className={styles.secondaryButton}>
+          <button
+            className={styles.secondaryButton}
+            onClick={handleExport}
+            disabled={exporting}
+          >
             <Download size={18} />
-            Export
+            {exporting ? 'Exporting...' : 'Export'}
           </button>
-          <button className={styles.secondaryButton}>
+          <button
+            className={styles.secondaryButton}
+            onClick={() => setShowImportModal(true)}
+          >
             <Upload size={18} />
             Import
           </button>
-          <button 
+          <button
             className={styles.primaryButton}
             onClick={handleAddProduct}
           >
@@ -337,7 +381,7 @@ const Products = () => {
         </div>
 
         <div className={styles.filterControls}>
-          <select 
+          <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             className={styles.categoryFilter}
@@ -352,7 +396,7 @@ const Products = () => {
 
           {selectedProducts.length > 0 && (
             <div className={styles.bulkActions}>
-              <select 
+              <select
                 value={bulkAction}
                 onChange={(e) => setBulkAction(e.target.value)}
                 className={styles.bulkSelect}
@@ -362,7 +406,7 @@ const Products = () => {
                 <option value="activate">Activate</option>
                 <option value="deactivate">Deactivate</option>
               </select>
-              <button 
+              <button
                 onClick={handleBulkAction}
                 className={styles.bulkActionButton}
                 disabled={!bulkAction}
@@ -402,6 +446,15 @@ const Products = () => {
             onCancel={() => setShowModal(false)}
           />
         </Modal>
+      )}
+
+      {/* Import Modal */}
+      {showImportModal && (
+        <ImportModal
+          isOpen={showImportModal}
+          onClose={() => setShowImportModal(false)}
+          onImportComplete={handleImportComplete}
+        />
       )}
     </div>
   )

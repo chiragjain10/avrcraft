@@ -1,0 +1,386 @@
+/* src/components/products/ImportModal/ImportModal.module.css */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+.modalContent {
+  background: var(--admin-bg);
+  border-radius: 12px;
+  width: 800px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--admin-border);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--admin-border);
+  background: var(--admin-card);
+}
+
+.modalTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--admin-accent);
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--admin-text-light);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background: var(--admin-border);
+  color: var(--admin-text);
+}
+
+.modalBody {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.uploadSection,
+.mappingSection,
+.resultsSection {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--admin-text);
+  margin: 0 0 1rem 0;
+}
+
+.dropZone {
+  border: 2px dashed var(--admin-border);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--admin-card);
+}
+
+.dropZone:hover,
+.dropZone.dragging {
+  border-color: var(--admin-accent);
+  background: rgba(201, 169, 110, 0.05);
+}
+
+.dropZone.hasFile {
+  border-style: solid;
+  border-color: var(--admin-success);
+  background: rgba(46, 204, 113, 0.05);
+}
+
+.fileInput {
+  display: none;
+}
+
+.dropContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--admin-text-light);
+}
+
+.dropText {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.dropSubtext {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--admin-text-light);
+  margin: 0;
+}
+
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.fileDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fileName {
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--admin-text);
+}
+
+.fileSize {
+  font-family: var(--font-accent);
+  font-size: 0.85rem;
+  color: var(--admin-text-light);
+}
+
+.removeFileButton {
+  background: var(--admin-error);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.removeFileButton:hover {
+  transform: scale(1.1);
+}
+
+.filePreviewNote {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(201, 169, 110, 0.1);
+  border-radius: 6px;
+  color: var(--admin-accent);
+  font-size: 0.9rem;
+}
+
+.mappingDescription {
+  color: var(--admin-text-light);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.mappingTable {
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mappingHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--admin-card);
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.headerCell {
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--admin-text);
+  font-size: 0.9rem;
+}
+
+.mappingRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--admin-border);
+  background: var(--admin-bg);
+}
+
+.mappingRow:last-child {
+  border-bottom: none;
+}
+
+.fieldName {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fieldName code {
+  background: var(--admin-card);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--admin-primary);
+}
+
+.fieldExample {
+  font-size: 0.8rem;
+  color: var(--admin-text-light);
+  font-style: italic;
+}
+
+.fieldMapping {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mappingArrow {
+  color: var(--admin-accent);
+  font-weight: 600;
+}
+
+.fieldSelect {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fieldSelect:focus {
+  outline: none;
+  border-color: var(--admin-accent);
+  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
+}
+
+.progressContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.progressBar {
+  height: 8px;
+  background: var(--admin-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--admin-accent), var(--admin-primary));
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-family: var(--font-accent);
+  font-size: 0.9rem;
+  color: var(--admin-text);
+  text-align: center;
+}
+
+.resultMessage {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.resultMessage.success {
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  color: #27ae60;
+}
+
+.resultMessage.error {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: #c0392b;
+}
+
+.resultDetails h4 {
+  margin: 0 0 0.5rem 0;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+}
+
+.resultDetails p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--admin-border);
+  background: var(--admin-card);
+}
+
+.cancelButton {
+  padding: 0.75rem 2rem;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton:hover {
+  background: var(--admin-border);
+}
+
+.importButton {
+  padding: 0.75rem 2rem;
+  background: var(--admin-accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.importButton:hover:not(:disabled) {
+  background: var(--admin-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 43, 60, 0.2);
+}
+
+.importButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}

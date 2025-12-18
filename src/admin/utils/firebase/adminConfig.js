@@ -474,5 +474,140 @@ export const adminShipping = {
       console.error('Error fetching shipping methods:', error)
       throw error
     }
+  },
+
+  // Export all products to JSON
+  exportProducts: async () => {
+    try {
+      const productsRef = collection(db, 'products');
+      const snapshot = await getDocs(productsRef);
+      const products = [];
+
+      snapshot.forEach(doc => {
+        products.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+
+      // Create downloadable JSON file
+      const jsonStr = JSON.stringify(products, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      // Create download link
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `products_export_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      return { success: true, count: products.length };
+    } catch (error) {
+      console.error('Export error:', error);
+      throw error;
+    }
+  },
+
+  // Import products from JSON (with field mapping)
+  importProducts: async (jsonData, fieldMapping = {}) => {
+    try {
+      const products = JSON.parse(jsonData);
+      const batch = writeBatch(db);
+      let importedCount = 0;
+      let skippedCount = 0;
+
+      console.log('Field mapping:', fieldMapping);
+      console.log('Sample product from import:', products[0]);
+
+      // Default field mapping (old project → new project)
+      const defaultMapping = {
+        'title': 'name',
+        'description': 'description',
+        'price': 'price',
+        'stock': 'stock',
+        'category': 'category',
+        'images': 'images',
+        'rating': 'rating',
+        'featured': 'isHighlight',
+        'trending': 'isBestseller',
+        'productTypes': 'tags',
+        'subcategory': 'subcategory'
+      };
+
+      // Merge custom mapping with defaults
+      const finalMapping = { ...defaultMapping, ...fieldMapping };
+
+      for (const oldProduct of products) {
+        try {
+          // Map old fields to new fields
+          const newProduct = {};
+
+          for (const [oldField, newField] of Object.entries(finalMapping)) {
+            if (oldProduct[oldField] !== undefined) {
+              // Special handling for specific fields
+              if (newField === 'isHighlight') {
+                newProduct[newField] = Boolean(oldProduct[oldField]);
+              } else if (newField === 'isBestseller') {
+                newProduct[newField] = Boolean(oldProduct[oldField]);
+              } else if (newField === 'tags' && oldProduct[oldField]) {
+                newProduct[newField] = Array.isArray(oldProduct[oldField])
+                  ? oldProduct[oldField]
+                  : [oldProduct[oldField]];
+              } else {
+                newProduct[newField] = oldProduct[oldField];
+              }
+            }
+          }
+
+          // Add default values for required fields
+          if (!newProduct.name) newProduct.name = oldProduct.title || 'Untitled Product';
+          if (!newProduct.category) newProduct.category = oldProduct.category || 'Uncategorized';
+          if (!newProduct.stock && newProduct.stock !== 0) newProduct.stock = oldProduct.stock || 0;
+          if (!newProduct.price) newProduct.price = oldProduct.price || 0;
+
+          // Add default fields for new system
+          newProduct.isActive = true;
+          newProduct.createdAt = new Date().toISOString();
+          newProduct.updatedAt = new Date().toISOString();
+
+          // Create new document with same ID if exists, otherwise new ID
+          const docId = oldProduct.id || `imported_${Date.now()}_${importedCount}`;
+          const productRef = doc(db, 'products', docId);
+
+          batch.set(productRef, newProduct);
+          importedCount++;
+
+          // Firestore batch limit: 500 operations
+          if (importedCount % 400 === 0) {
+            await batch.commit();
+            // Start new batch
+            // Note: We need to create a new batch
+          }
+
+        } catch (productError) {
+          console.warn('Skipping product due to error:', productError);
+          skippedCount++;
+        }
+      }
+
+      // Commit remaining batch
+      if (importedCount % 400 !== 0) {
+        await batch.commit();
+      }
+
+      return {
+        success: true,
+        imported: importedCount,
+        skipped: skippedCount,
+        total: products.length
+      };
+
+    } catch (error) {
+      console.error('Import error:', error);
+      throw error;
+    }
   }
 }

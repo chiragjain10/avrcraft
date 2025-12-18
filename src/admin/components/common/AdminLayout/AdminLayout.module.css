@@ -106,11 +106,11 @@
 /* Responsive Design */
 @media (max-width: 1024px) {
   .mainContent {
-    margin-left: 0;
+    /* margin-left: 0; */
   }
   
   .mainContent.sidebarCollapsed {
-    margin-left: 0;
+    /* margin-left: 0; */
   }
   
   .content {

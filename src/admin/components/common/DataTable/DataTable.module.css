@@ -7,15 +7,14 @@
 }
 
 .tableContainer {
-  overflow-x: auto;
   border: 1px solid var(--admin-border);
   border-radius: 8px;
 }
 
 .table {
+  overflow-x: auto;
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px;
 }
 
 .tableHeader {

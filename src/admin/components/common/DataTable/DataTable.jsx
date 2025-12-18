@@ -228,7 +228,7 @@ const DataTable = ({
   return (
     <div className={styles.dataTable}>
       <div className={styles.tableContainer}>
-        <table className={styles.table}>
+        <table className={styles.table} style={{"overflowX": "auto"}}>
           {renderHeader()}
           {renderBody()}
         </table>

@@ -7,6 +7,9 @@ pnpm-error.log*
 logs
 *.log
 
+# Firebase service account key
+scripts/serviceAccountKey.json
+
 # Dependency directories
 node_modules/
 
