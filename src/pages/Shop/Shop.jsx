@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Filter, Grid, List, X, Search, ChevronDown } from 'lucide-react'
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore'
+import { collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore'
 import ProductGrid from '../../components/products/ProductGrid/ProductGrid'
 import ProductFilters from '../../components/products/ProductFilters/ProductFilters'
 import { useProducts } from '../../hooks/useProducts'
@@ -14,27 +14,31 @@ const Shop = () => {
   const navigate = useNavigate()
   const [viewMode, setViewMode] = useState('grid')
   const [showFilters, setShowFilters] = useState(false)
+  const [isSortOpen, setIsSortOpen] = useState(false)
   const [categories, setCategories] = useState([])
   const [isLoadingCategories, setIsLoadingCategories] = useState(true)
 
   const { searchQuery, setSearchQuery } = useSearch()
 
   // Initialize filters from URL
-  const initialFilters = useMemo(() => ({
-    category: searchParams.get('category') || '',
-    minPrice: Number(searchParams.get('minPrice')) || 0,
-    maxPrice: Number(searchParams.get('maxPrice')) || 1000,
-    rating: Number(searchParams.get('rating')) || 0,
-    author: searchParams.get('author') || '',
-    availability: searchParams.get('availability') || 'all',
-    format: searchParams.get('format') || '',
-    isBestseller: searchParams.get('bestseller') === 'true',
-    isFiction: searchParams.get('fiction') === 'true',
-    isNonFiction: searchParams.get('nonfiction') === 'true',
-    isChildrens: searchParams.get('childrens') === 'true',
-    isStationery: searchParams.get('stationery') === 'true',
-    isGift: searchParams.get('gift') === 'true'
-  }), [searchParams])
+  const initialFilters = useMemo(() => {
+    const category = searchParams.get('category') || ''
+    const minPrice = Number(searchParams.get('minPrice'))
+    const maxPrice = Number(searchParams.get('maxPrice'))
+    
+    return {
+      category: category,
+      priceRange: [
+        !isNaN(minPrice) && minPrice >= 0 ? minPrice : 0,
+        !isNaN(maxPrice) && maxPrice > 0 ? maxPrice : 1000
+      ],
+      rating: Number(searchParams.get('rating')) || 0,
+      author: searchParams.get('author') || '',
+      availability: searchParams.get('availability') || 'all',
+      format: searchParams.get('format') || '',
+      tags: searchParams.get('tags') ? searchParams.get('tags').split(',') : []
+    }
+  }, [searchParams])
 
   const [filters, setFilters] = useState(initialFilters)
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest')
@@ -44,23 +48,64 @@ const Shop = () => {
     const fetchCategories = async () => {
       try {
         setIsLoadingCategories(true)
-        const categoriesQuery = query(
-          collection(db, 'categories'),
-          where('isActive', '==', true)
-        )
         
-        const querySnapshot = await getDocs(categoriesQuery)
-        const categoriesData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }))
+        // First try with orderBy
+        try {
+          const categoriesQuery = query(
+            collection(db, 'categories'),
+            where('isActive', '==', true),
+            orderBy('name', 'asc'),
+            limit(20)
+          )
 
-        // Sort alphabetically
-        categoriesData.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
-        setCategories(categoriesData)
+          const querySnapshot = await getDocs(categoriesQuery)
+          const categoriesData = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            name: doc.data().name || doc.data().categoryName || 'Unnamed Category',
+            ...doc.data()
+          }))
+          setCategories(categoriesData)
+        } catch (orderError) {
+          console.warn('Could not fetch categories with orderBy, trying without:', orderError)
+          
+          // Fallback without orderBy
+          const fallbackQuery = query(
+            collection(db, 'categories'),
+            where('isActive', '==', true),
+            limit(20)
+          )
+          
+          const fallbackSnapshot = await getDocs(fallbackQuery)
+          const fallbackData = fallbackSnapshot.docs.map(doc => ({
+            id: doc.id,
+            name: doc.data().name || doc.data().categoryName || 'Unnamed Category',
+            ...doc.data()
+          }))
+          
+          // Sort manually
+          fallbackData.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+          console.log('Fetched categories (fallback):', fallbackData)
+          setCategories(fallbackData)
+        }
       } catch (error) {
         console.error('Error fetching categories:', error)
-        setCategories([])
+        // Fallback categories
+        const fallbackCategories = [
+          { id: 'biographies', name: 'Biographies' },
+          { id: 'crime', name: 'Crime & Thriller' },
+          { id: 'self-help', name: 'Self-Help' },
+          { id: 'childrens', name: 'Children' },
+          { id: 'poetry', name: 'Poetry' },
+          { id: 'trading', name: 'Trading' },
+          { id: 'health', name: 'Health' },
+          { id: 'wealth', name: 'Wealth' },
+          { id: 'hindi', name: 'Hindi' },
+          { id: 'spirituality', name: 'Spirituality' },
+          { id: 'romance', name: 'Romance' },
+          { id: 'business', name: 'Business' },
+          { id: 'fiction', name: 'Fiction' }
+        ]
+        setCategories(fallbackCategories)
       } finally {
         setIsLoadingCategories(false)
       }
@@ -77,16 +122,11 @@ const Shop = () => {
     if (filters.category) params.set('category', filters.category)
     if (filters.author) params.set('author', filters.author)
     if (filters.format) params.set('format', filters.format)
-    if (filters.minPrice > 0) params.set('minPrice', filters.minPrice)
-    if (filters.maxPrice < 1000) params.set('maxPrice', filters.maxPrice)
+    if (filters.tags.length > 0) params.set('tags', filters.tags.join(','))
+    if (filters.priceRange[0] > 0) params.set('minPrice', filters.priceRange[0])
+    if (filters.priceRange[1] < 1000) params.set('maxPrice', filters.priceRange[1])
     if (filters.rating > 0) params.set('rating', filters.rating)
     if (filters.availability !== 'all') params.set('availability', filters.availability)
-    if (filters.isBestseller) params.set('bestseller', 'true')
-    if (filters.isFiction) params.set('fiction', 'true')
-    if (filters.isNonFiction) params.set('nonfiction', 'true')
-    if (filters.isChildrens) params.set('childrens', 'true')
-    if (filters.isStationery) params.set('stationery', 'true')
-    if (filters.isGift) params.set('gift', 'true')
     if (sortBy !== 'newest') params.set('sort', sortBy)
 
     // Update URL without page reload
@@ -97,18 +137,19 @@ const Shop = () => {
   }, [searchQuery, filters, sortBy, navigate])
 
   // Fetch products with filters
-  const { products = [], loading: productsLoading, error: productsError } = 
-    useProducts(filters, searchQuery, sortBy)
+  const { products = [], loading: productsLoading, error: productsError } = useProducts(filters, searchQuery)
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters)
+    // Close mobile filters on change
     if (window.innerWidth <= 768) {
       setShowFilters(false)
     }
   }
 
   const handleSearch = (e) => {
-    setSearchQuery(e.target.value)
+    const value = e.target.value
+    setSearchQuery(value)
   }
 
   const clearSearch = () => {
@@ -117,63 +158,105 @@ const Shop = () => {
 
   const handleSortChange = (value) => {
     setSortBy(value)
+    setIsSortOpen(false)
   }
 
   const clearAllFilters = () => {
     setFilters({
       category: '',
-      minPrice: 0,
-      maxPrice: 1000,
+      priceRange: [0, 1000],
       rating: 0,
       author: '',
       availability: 'all',
       format: '',
-      isBestseller: false,
-      isFiction: false,
-      isNonFiction: false,
-      isChildrens: false,
-      isStationery: false,
-      isGift: false
+      tags: []
     })
     setSearchQuery('')
     setSortBy('newest')
   }
 
-  // Get current category name for display
-  const currentCategoryName = useMemo(() => {
-    if (filters.category) {
-      const category = categories.find(cat => 
-        cat.id === filters.category || cat.name === filters.category
-      )
-      return category ? category.name : filters.category
-    }
-    return null
-  }, [filters.category, categories])
+  // Sort products
+  const sortedProducts = useMemo(() => {
+    if (!products || products.length === 0) return []
+
+    const sorted = [...products].sort((a, b) => {
+      switch (sortBy) {
+        case 'price-low':
+          return (a.price || 0) - (b.price || 0)
+        case 'price-high':
+          return (b.price || 0) - (a.price || 0)
+        case 'rating':
+          return (b.rating || 0) - (a.rating || 0)
+        case 'name':
+          return (a.name || '').localeCompare(b.name || '')
+        case 'popular':
+          return (b.isBestseller ? 1 : 0) - (a.isBestseller ? 1 : 0)
+        case 'newest':
+        default:
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+          return dateB - dateA
+      }
+    })
+    
+    return sorted
+  }, [products, sortBy])
 
   const activeFiltersCount = useMemo(() => {
     let count = 0
-    if (searchQuery) count++
+    if (searchQuery && searchQuery.trim()) count++
     if (filters.category) count++
-    if (filters.minPrice > 0 || filters.maxPrice < 1000) count++
+    if (filters.priceRange[0] !== 0 || filters.priceRange[1] !== 1000) count++
     if (filters.rating > 0) count++
     if (filters.author) count++
     if (filters.format) count++
     if (filters.availability !== 'all') count++
-    if (filters.isBestseller) count++
-    if (filters.isFiction) count++
-    if (filters.isNonFiction) count++
-    if (filters.isChildrens) count++
-    if (filters.isStationery) count++
-    if (filters.isGift) count++
+    if (filters.tags.length > 0) count++
     return count
   }, [filters, searchQuery])
 
   const sortOptions = [
     { value: 'newest', label: 'Newest First' },
+    { value: 'popular', label: 'Most Popular' },
     { value: 'price-low', label: 'Price: Low to High' },
     { value: 'price-high', label: 'Price: High to Low' },
-    { value: 'rating', label: 'Highest Rated' }
+    { value: 'rating', label: 'Highest Rated' },
+    { value: 'name', label: 'Name A-Z' }
   ]
+
+  // Get category name for display
+  const getCategoryName = (categoryId) => {
+    if (!categoryId) return ''
+    
+    // First, check if it's already a display name
+    if (categoryId.includes(' ')) return categoryId
+    
+    // Look for category in fetched categories
+    const category = categories.find(cat => {
+      if (!cat) return false
+      return cat.id === categoryId || 
+             cat.name === categoryId || 
+             cat.categoryName === categoryId
+    })
+    
+    if (category) {
+      return category.name || category.categoryName || categoryId
+    }
+    
+    // Format the ID for display
+    return categoryId
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, l => l.toUpperCase())
+  }
+
+  // Get current category name from URL
+  const currentCategoryName = useMemo(() => {
+    if (filters.category) {
+      const name = getCategoryName(filters.category)
+      return name
+    }
+    return null
+  }, [filters.category, categories])
 
   const isLoading = productsLoading || isLoadingCategories
 
@@ -184,20 +267,20 @@ const Shop = () => {
         <div className={styles.headerContent}>
           <div className={styles.headerText}>
             <h1 className={styles.title}>
-              {searchQuery 
+              {searchQuery && searchQuery.trim() 
                 ? `Search: "${searchQuery}"`
                 : currentCategoryName
-                  ? `${currentCategoryName}`
-                  : 'All Books'
+                  ? `${currentCategoryName} Books`
+                  : 'Book Collection'
               }
             </h1>
             <p className={styles.subtitle}>
               {isLoading 
                 ? 'Loading...' 
-                : searchQuery
-                  ? `Found ${products.length} book${products.length !== 1 ? 's' : ''}`
+                : searchQuery && searchQuery.trim()
+                  ? `Found ${sortedProducts.length} book${sortedProducts.length !== 1 ? 's' : ''} matching your search`
                   : currentCategoryName
-                    ? `${products.length} books available`
+                    ? `Browse our collection of ${currentCategoryName.toLowerCase()} books`
                     : 'Discover amazing books from bestselling authors'
               }
             </p>
@@ -242,6 +325,33 @@ const Shop = () => {
               <span className={styles.filterCount}>{activeFiltersCount}</span>
             )}
           </button>
+
+          {/* Sort Dropdown for Mobile */}
+          <div className={styles.sortDropdown}>
+            <button
+              className={styles.sortButton}
+              onClick={() => setIsSortOpen(!isSortOpen)}
+              type="button"
+            >
+              <span>Sort: {sortOptions.find(opt => opt.value === sortBy)?.label}</span>
+              <ChevronDown size={16} className={`${styles.sortArrow} ${isSortOpen ? styles.open : ''}`} />
+            </button>
+
+            {isSortOpen && (
+              <div className={styles.sortMenu}>
+                {sortOptions.map(option => (
+                  <button
+                    key={option.value}
+                    onClick={() => handleSortChange(option.value)}
+                    className={`${styles.sortOption} ${sortBy === option.value ? styles.active : ''}`}
+                    type="button"
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className={styles.content}>
@@ -304,7 +414,7 @@ const Shop = () => {
                 </div>
 
                 <span className={styles.resultCount}>
-                  {isLoading ? '...' : products.length} {products.length === 1 ? 'book' : 'books'} found
+                  {isLoading ? '...' : sortedProducts.length} {sortedProducts.length === 1 ? 'book' : 'books'} found
                 </span>
               </div>
 
@@ -312,17 +422,20 @@ const Shop = () => {
                 {/* Desktop Sort */}
                 <div className={styles.desktopSort}>
                   <span className={styles.sortLabel}>Sort by:</span>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => handleSortChange(e.target.value)}
-                    className={styles.sortSelect}
-                  >
-                    {sortOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  <div className={styles.sortSelect}>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => handleSortChange(e.target.value)}
+                      className={styles.sortSelectInput}
+                    >
+                      {sortOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown size={16} className={styles.selectArrow} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -342,7 +455,7 @@ const Shop = () => {
                 </div>
 
                 <div className={styles.filterTags}>
-                  {searchQuery && (
+                  {searchQuery && searchQuery.trim() && (
                     <span className={styles.filterTag}>
                       Search: "{searchQuery}"
                       <button
@@ -357,7 +470,7 @@ const Shop = () => {
 
                   {filters.category && (
                     <span className={styles.filterTag}>
-                      Category: {currentCategoryName}
+                      Category: {getCategoryName(filters.category)}
                       <button
                         onClick={() => handleFilterChange({ ...filters, category: '' })}
                         className={styles.removeTag}
@@ -368,11 +481,11 @@ const Shop = () => {
                     </span>
                   )}
 
-                  {filters.isBestseller && (
+                  {(filters.priceRange[0] > 0 || filters.priceRange[1] < 1000) && (
                     <span className={styles.filterTag}>
-                      Bestseller
+                      Price: ₹{filters.priceRange[0]} - ₹{filters.priceRange[1]}
                       <button
-                        onClick={() => handleFilterChange({ ...filters, isBestseller: false })}
+                        onClick={() => handleFilterChange({ ...filters, priceRange: [0, 1000] })}
                         className={styles.removeTag}
                         type="button"
                       >
@@ -381,11 +494,11 @@ const Shop = () => {
                     </span>
                   )}
 
-                  {filters.isFiction && (
+                  {filters.rating > 0 && (
                     <span className={styles.filterTag}>
-                      Fiction
+                      {filters.rating}+ Stars
                       <button
-                        onClick={() => handleFilterChange({ ...filters, isFiction: false })}
+                        onClick={() => handleFilterChange({ ...filters, rating: 0 })}
                         className={styles.removeTag}
                         type="button"
                       >
@@ -394,11 +507,11 @@ const Shop = () => {
                     </span>
                   )}
 
-                  {filters.isNonFiction && (
+                  {filters.author && (
                     <span className={styles.filterTag}>
-                      Non-Fiction
+                      Author: {filters.author}
                       <button
-                        onClick={() => handleFilterChange({ ...filters, isNonFiction: false })}
+                        onClick={() => handleFilterChange({ ...filters, author: '' })}
                         className={styles.removeTag}
                         type="button"
                       >
@@ -407,11 +520,37 @@ const Shop = () => {
                     </span>
                   )}
 
-                  {filters.isChildrens && (
+                  {filters.format && (
                     <span className={styles.filterTag}>
-                      Children's Books
+                      Format: {filters.format.charAt(0).toUpperCase() + filters.format.slice(1)}
                       <button
-                        onClick={() => handleFilterChange({ ...filters, isChildrens: false })}
+                        onClick={() => handleFilterChange({ ...filters, format: '' })}
+                        className={styles.removeTag}
+                        type="button"
+                      >
+                        <X size={14} />
+                      </button>
+                    </span>
+                  )}
+
+                  {filters.availability !== 'all' && (
+                    <span className={styles.filterTag}>
+                      {filters.availability === 'in-stock' ? 'In Stock' : 'Out of Stock'}
+                      <button
+                        onClick={() => handleFilterChange({ ...filters, availability: 'all' })}
+                        className={styles.removeTag}
+                        type="button"
+                      >
+                        <X size={14} />
+                      </button>
+                    </span>
+                  )}
+
+                  {filters.tags.length > 0 && (
+                    <span className={styles.filterTag}>
+                      Tags: {filters.tags.join(', ')}
+                      <button
+                        onClick={() => handleFilterChange({ ...filters, tags: [] })}
                         className={styles.removeTag}
                         type="button"
                       >
@@ -433,15 +572,22 @@ const Shop = () => {
               ) : productsError ? (
                 <div className={styles.error}>
                   <h3>Unable to load books</h3>
-                  <p>Failed to load products. Please try again.</p>
+                  <p>{productsError.message || 'Failed to load products. Please try again.'}</p>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className={styles.retryBtn}
+                    type="button"
+                  >
+                    Try Again
+                  </button>
                 </div>
-              ) : products.length === 0 ? (
+              ) : sortedProducts.length === 0 ? (
                 <div className={styles.empty}>
                   <Search size={64} className={styles.emptyIcon} />
                   <h3>No books found</h3>
                   <p>
-                    {searchQuery
-                      ? `No books found for "${searchQuery}". Try different keywords.`
+                    {searchQuery && searchQuery.trim()
+                      ? `No books found for "${searchQuery}". Try different keywords or clear search.`
                       : 'Try adjusting your filters or search criteria'}
                   </p>
                   <button
@@ -449,13 +595,14 @@ const Shop = () => {
                     className={styles.clearBtn}
                     type="button"
                   >
-                    Clear All Filters
+                    {searchQuery && searchQuery.trim() ? 'Clear Search' : 'Clear All Filters'}
                   </button>
                 </div>
               ) : (
                 <ProductGrid
-                  products={products}
+                  products={sortedProducts}
                   viewMode={viewMode}
+                  categories={categories}
                 />
               )}
             </div>

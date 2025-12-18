@@ -1,0 +1,227 @@
+/* pages/Shipping/Shipping.module.css */
+.shipping {
+  padding: 20px;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--admin-text);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--admin-light-text);
+  font-size: 15px;
+}
+
+.section {
+  background: var(--admin-light-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--admin-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.addButton:hover {
+  background: var(--admin-primary-dark);
+}
+
+.tableSection {
+  background: var(--admin-bg);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Shipping-specific styles */
+.zoneInfo, .methodInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.regions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.regionTag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--admin-primary-light);
+  color: var(--admin-primary);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.moreRegions {
+  font-size: 12px;
+  color: var(--admin-light-text);
+  margin-left: 4px;
+}
+
+.zoneMethods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.methodTag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--admin-light-bg);
+  color: var(--admin-text);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.methodDescription {
+  color: var(--admin-text);
+  font-size: 14px;
+}
+
+.cost {
+  font-weight: 600;
+  color: var(--admin-text);
+  font-size: 16px;
+}
+
+.freeThreshold {
+  font-size: 12px;
+  color: var(--admin-success);
+  margin-top: 4px;
+}
+
+.deliveryTime {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--admin-text);
+  font-size: 13px;
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status.active {
+  background: var(--admin-success-light);
+  color: var(--admin-success);
+}
+
+.status.inactive {
+  background: var(--admin-error-light);
+  color: var(--admin-error);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-bg);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--admin-text);
+}
+
+.actionButton:hover {
+  background: var(--admin-hover);
+}
+
+.actionButton.delete {
+  border-color: var(--admin-error-light);
+  color: var(--admin-error);
+}
+
+.actionButton.delete:hover {
+  background: var(--admin-error-light);
+}
+
+.modalContent {
+  padding: 20px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .shipping {
+    padding: 16px;
+  }
+  
+  .sectionHeader {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .addButton {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .regions, .zoneMethods {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 24px;
+  }
+  
+  .section {
+    padding: 16px;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .actionButton {
+    width: 100%;
+  }
+}

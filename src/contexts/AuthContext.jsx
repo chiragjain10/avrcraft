@@ -27,15 +27,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthChange(async (firebaseUser) => {
-      console.log('Auth state changed:', firebaseUser)
       setLoading(true)
       setError(null)
 
-      if (firebaseUser) {
-        console.log('User signed in:', firebaseUser.email)
-        const userResult = await getUserDocument(firebaseUser.uid)
-        console.log('User document result:', userResult)
-        
+        if (firebaseUser) {
+        const userResult = await getUserDocument(firebaseUser.uid)        
         if (userResult.success) {
           setUser(firebaseUser)
           setUserData(userResult.user)
@@ -45,7 +41,6 @@ export const AuthProvider = ({ children }) => {
           setUserData(null)
         }
       } else {
-        console.log('User signed out')
         setUser(null)
         setUserData(null)
       }
@@ -64,7 +59,6 @@ export const AuthProvider = ({ children }) => {
     
     if (result.success) {
       setUser(result.user)
-      // User data will be loaded by the auth state listener
     } else {
       setError(result.error)
     }
@@ -81,7 +75,6 @@ export const AuthProvider = ({ children }) => {
     
     if (result.success) {
       setUser(result.user)
-      // User data will be loaded by the auth state listener
     } else {
       setError(result.error)
     }
@@ -131,8 +124,6 @@ export const AuthProvider = ({ children }) => {
     setLoading(true)
     setError(null)
     
-    // This would be implemented to update user profile in Firestore
-    // For now, we'll just update local state
     setUserData(prev => ({ ...prev, ...updates }))
     
     setLoading(false)

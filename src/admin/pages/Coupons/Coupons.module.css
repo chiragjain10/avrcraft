@@ -1,0 +1,242 @@
+/* pages/Coupons/Coupons.module.css */
+.coupons {
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--admin-text);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--admin-light-text);
+  font-size: 15px;
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+}
+
+.createButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--admin-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.createButton:hover {
+  background: var(--admin-primary-dark);
+}
+
+.searchSection {
+  background: var(--admin-light-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.searchBox {
+  position: relative;
+}
+
+.searchBox svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--admin-light-text);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-size: 15px;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.statCard {
+  background: var(--admin-light-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.statIcon {
+  width: 48px;
+  height: 48px;
+  background: var(--admin-primary-light);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--admin-primary);
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statNumber {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--admin-text);
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  color: var(--admin-light-text);
+  font-size: 14px;
+}
+
+.tableSection {
+  background: var(--admin-bg);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Coupon-specific styles */
+.couponCode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.couponDescription {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.minPurchase {
+  font-size: 12px;
+  color: var(--admin-light-text);
+}
+
+.discount {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--admin-success);
+}
+
+.validity {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--admin-text);
+}
+
+.usage {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.usageCount {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--admin-text);
+}
+
+.usageAmount {
+  font-size: 12px;
+  color: var(--admin-success);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.status.active {
+  background: var(--admin-success-light);
+  color: var(--admin-success);
+}
+
+.status.inactive {
+  background: var(--admin-error-light);
+  color: var(--admin-error);
+}
+
+.couponForm {
+  padding: 20px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .coupons {
+    padding: 16px;
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .headerActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 24px;
+  }
+  
+  .createButton {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}

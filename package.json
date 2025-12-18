@@ -6,13 +6,19 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "export-data": "node scripts/exportData.js",
+    "import-data": "node scripts/importData.js",
+    "backup": "npm run export-data",
+    "restore": "npm run import-data"
   },
   "dependencies": {
     "@cloudinary/url-gen": "^1.22.0",
     "firebase": "^9.23.0",
+    "firebase-admin": "^13.6.0",
     "framer-motion": "^8.5.0",
     "lucide-react": "^0.216.0",
+    "node-fetch": "^2.7.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

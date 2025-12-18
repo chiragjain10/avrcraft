@@ -11,7 +11,7 @@ import {
   Upload
 } from 'lucide-react'
 import { useAdmin } from '../../contexts/AdminContext'
-import { adminProducts } from '../../utils/firebase/adminConfig'
+import { adminProducts, adminCategories } from '../../utils/firebase/adminConfig'
 import DataTable from '../../components/common/DataTable/DataTable'
 import Modal from '../../components/common/Modal/Modal'
 import ProductForm from '../../components/products/ProductForm/ProductForm'
@@ -19,6 +19,7 @@ import styles from './Products.module.css'
 
 const Products = () => {
   const [products, setProducts] = useState([])
+  const [category, setCategory] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -31,7 +32,8 @@ const Products = () => {
 
   // Fetch products
   useEffect(() => {
-    fetchProducts()
+    fetchProducts(),
+    fetchCategories()
   }, [])
 
   const fetchProducts = async () => {
@@ -44,6 +46,21 @@ const Products = () => {
       addNotification({
         type: 'error',
         message: 'Failed to load products'
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+  const fetchCategories = async () => {
+    try {
+      setLoading(true)
+      const categoryData = await adminCategories.getCategories()
+      setCategory(categoryData)
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+      addNotification({
+        type: 'error',
+        message: 'Failed to load categories'
       })
     } finally {
       setLoading(false)
@@ -62,7 +79,7 @@ const Products = () => {
   })
 
   // Get unique categories for filter
-  const categories = ['all', ...new Set(products.map(p => p.category).filter(Boolean))]
+  const categories = ['all', ...new Set(category.map(p => p.name).filter(Boolean))]
 
   const handleAddProduct = () => {
     setEditingProduct(null)

@@ -100,7 +100,6 @@ const ProductGrid = ({ products = [], viewMode = 'grid', categories = [] }) => {
     
     // First check if categories is an array
     if (!Array.isArray(categories)) {
-      console.warn('Categories is not an array:', categories)
       return String(categoryId).replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
     }
     
@@ -127,7 +126,6 @@ const ProductGrid = ({ products = [], viewMode = 'grid', categories = [] }) => {
         ) : (
           safeProducts.map((product) => {
             if (!product || !product.id) {
-              console.warn('Invalid product:', product)
               return null
             }
             
@@ -275,13 +273,7 @@ const ProductGridItem = memo(({
             {/* Badges */}
             <div className={styles.imageBadges}>
               {safeProduct.isNew && <span className={styles.newBadge}>New</span>}
-              {safeProduct.isBestseller && <span className={styles.bestsellerBadge}>Bestseller</span>}
-              {discount > 0 && <span className={styles.discountBadge}>{discount}% OFF</span>}
-              {safeProduct.category && (
-                <span className={styles.categoryBadge}>
-                  {getCategoryName ? getCategoryName(safeProduct.category) : safeProduct.category}
-                </span>
-              )}
+
             </div>
 
             {/* Quick Actions */}
@@ -459,13 +451,6 @@ const ProductListItem = memo(({
                   </span>
                 </div>
               )}
-
-              {/* Badges */}
-              <div className={styles.imageBadges}>
-                {safeProduct.isNew && <span className={styles.newBadge}>New</span>}
-                {safeProduct.isBestseller && <span className={styles.bestsellerBadge}>Bestseller</span>}
-                {discount > 0 && <span className={styles.discountBadge}>{discount}% OFF</span>}
-              </div>
             </div>
           </div>
         </Link>
@@ -489,26 +474,6 @@ const ProductListItem = memo(({
               </div>
             )}
           </div>
-
-          {/* Rating and Reviews */}
-          {safeProduct.rating && safeProduct.rating > 0 && (
-            <div className={styles.listRating}>
-              <div className={styles.ratingStars}>
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={`list-star-${safeProduct.id}-${i}`}
-                    size={14}
-                    className={i < Math.floor(safeProduct.rating) ? styles.filledStar : styles.emptyStar}
-                    fill={i < Math.floor(safeProduct.rating) ? "currentColor" : "none"}
-                  />
-                ))}
-              </div>
-              <span className={styles.ratingValue}>{safeProduct.rating.toFixed(1)}</span>
-              {safeProduct.reviewCount && safeProduct.reviewCount > 0 && (
-                <span className={styles.reviewCount}>({safeProduct.reviewCount} reviews)</span>
-              )}
-            </div>
-          )}
 
           {/* Description */}
           {safeProduct.description && (

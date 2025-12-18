@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Star, MapPin, Clock } from 'lucide-react'
+import { Star, MapPin, Clock, ArrowRight  } from 'lucide-react'
 import styles from './ArtisanSpotlight.module.css'
 
 const ArtisanCard = ({ artisan }) => {

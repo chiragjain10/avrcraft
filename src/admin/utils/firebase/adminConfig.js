@@ -1,15 +1,15 @@
-import { 
-  collection, 
-  doc, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  getDocs, 
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  getDocs,
   getDoc,
   query,
   where,
   orderBy,
-  serverTimestamp 
+  serverTimestamp
 } from 'firebase/firestore'
 import { db } from '../../../utils/firebase/config'
 import cloudinaryService from '../../../utils/cloudinary'
@@ -21,8 +21,8 @@ export const adminProducts = {
     try {
       const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
       const querySnapshot = await getDocs(q)
-      return querySnapshot.docs.map(doc => ({ 
-        id: doc.id, 
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
         ...doc.data(),
         // Ensure proper data types
         price: doc.data().price || 0,
@@ -107,21 +107,21 @@ export const adminCategories = {
     try {
       const q = query(collection(db, 'categories'), orderBy('name', 'asc'))
       const querySnapshot = await getDocs(q)
-      return querySnapshot.docs.map(doc => ({ 
-        id: doc.id, 
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
         ...doc.data(),
         isActive: doc.data().isActive !== undefined ? doc.data().isActive : true
       }))
     } catch (error) {
       console.error('Error fetching categories:', error)
       throw error
-    } 
+    }
   },
 
   addCategory: async (categoryData) => {
     try {
       let imageUrl = categoryData.image || ''
-      
+
       // Upload category image to Cloudinary if new file is provided
       if (categoryData.imageFile) {
         const folder = 'avrcrafts/categories'
@@ -136,7 +136,7 @@ export const adminCategories = {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       }
-      
+
       const docRef = await addDoc(collection(db, 'categories'), categoryWithTimestamp)
       return { id: docRef.id, ...categoryWithTimestamp }
     } catch (error) {
@@ -147,13 +147,13 @@ export const adminCategories = {
 
   updateCategory: async (categoryId, categoryData) => {
     try {
-      let updateData = { 
+      let updateData = {
         name: categoryData.name,
         description: categoryData.description || '',
         isActive: categoryData.isActive !== undefined ? categoryData.isActive : true,
         updatedAt: serverTimestamp()
       }
-      
+
       // Upload new image if provided
       if (categoryData.imageFile) {
         const folder = 'avrcrafts/categories'
@@ -188,8 +188,8 @@ export const adminBlogs = {
     try {
       const q = query(collection(db, 'blogs'), orderBy('createdAt', 'desc'))
       const querySnapshot = await getDocs(q)
-      return querySnapshot.docs.map(doc => ({ 
-        id: doc.id, 
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
         ...doc.data(),
         isActive: doc.data().isActive !== undefined ? doc.data().isActive : true
       }))
@@ -202,7 +202,7 @@ export const adminBlogs = {
   addBlog: async (blogData) => {
     try {
       let imageUrl = blogData.image || ''
-      
+
       // Upload blog image to Cloudinary if new file is provided
       if (blogData.imageFile) {
         const folder = 'avrcrafts/blogs'
@@ -218,7 +218,7 @@ export const adminBlogs = {
         views: blogData.views || 0,
         likes: blogData.likes || 0
       }
-      
+
       const docRef = await addDoc(collection(db, 'blogs'), blogWithTimestamp)
       return { id: docRef.id, ...blogWithTimestamp }
     } catch (error) {
@@ -233,7 +233,7 @@ export const adminBlogs = {
         ...blogData,
         updatedAt: serverTimestamp()
       }
-      
+
       // Upload new image if provided
       if (blogData.imageFile) {
         const folder = 'avrcrafts/blogs'
@@ -255,6 +255,223 @@ export const adminBlogs = {
       await deleteDoc(doc(db, 'blogs', blogId))
     } catch (error) {
       console.error('Error deleting blog:', error)
+      throw error
+    }
+  }
+}
+
+// Customers Management
+export const adminCustomers = {
+  getCustomers: async () => {
+    try {
+      const q = query(collection(db, 'users'), where('role', '==', 'customer'))
+      const querySnapshot = await getDocs(q)
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    } catch (error) {
+      console.error('Error fetching customers:', error)
+      throw error
+    }
+  },
+
+  updateCustomer: async (customerId, customerData) => {
+    try {
+      const customerRef = doc(db, 'users', customerId)
+      await updateDoc(customerRef, {
+        ...customerData,
+        updatedAt: serverTimestamp()
+      })
+    } catch (error) {
+      console.error('Error updating customer:', error)
+      throw error
+    }
+  }
+}
+
+// Orders Management
+export const adminOrders = {
+  getOrders: async () => {
+    try {
+      const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'))
+      const querySnapshot = await getDocs(q)
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate()
+      }))
+    } catch (error) {
+      console.error('Error fetching orders:', error)
+      throw error
+    }
+  },
+
+  updateOrderStatus: async (orderId, status) => {
+    try {
+      const orderRef = doc(db, 'orders', orderId)
+      await updateDoc(orderRef, {
+        status,
+        updatedAt: serverTimestamp()
+      })
+    } catch (error) {
+      console.error('Error updating order:', error)
+      throw error
+    }
+  },
+
+  deleteOrder: async (orderId) => {
+    try {
+      await deleteDoc(doc(db, 'orders', orderId))
+    } catch (error) {
+      console.error('Error deleting order:', error)
+      throw error
+    }
+  }
+}
+
+// Artisans Management
+export const adminArtisans = {
+  getArtisans: async () => {
+    try {
+      const q = query(collection(db, 'artisans'), orderBy('createdAt', 'desc'))
+      const querySnapshot = await getDocs(q)
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    } catch (error) {
+      console.error('Error fetching artisans:', error)
+      throw error
+    }
+  },
+
+  addArtisan: async (artisanData) => {
+    try {
+      const artisanWithTimestamp = {
+        ...artisanData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }
+      const docRef = await addDoc(collection(db, 'artisans'), artisanWithTimestamp)
+      return { id: docRef.id, ...artisanWithTimestamp }
+    } catch (error) {
+      console.error('Error adding artisan:', error)
+      throw error
+    }
+  },
+
+  updateArtisan: async (artisanId, artisanData) => {
+    try {
+      const artisanRef = doc(db, 'artisans', artisanId)
+      await updateDoc(artisanRef, {
+        ...artisanData,
+        updatedAt: serverTimestamp()
+      })
+    } catch (error) {
+      console.error('Error updating artisan:', error)
+      throw error
+    }
+  },
+
+  deleteArtisan: async (artisanId) => {
+    try {
+      await deleteDoc(doc(db, 'artisans', artisanId))
+    } catch (error) {
+      console.error('Error deleting artisan:', error)
+      throw error
+    }
+  }
+}
+
+// Reviews Management
+export const adminReviews = {
+  getReviews: async () => {
+    try {
+      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'))
+      const querySnapshot = await getDocs(q)
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    } catch (error) {
+      console.error('Error fetching reviews:', error)
+      throw error
+    }
+  },
+
+  updateReviewStatus: async (reviewId, isApproved) => {
+    try {
+      const reviewRef = doc(db, 'reviews', reviewId)
+      await updateDoc(reviewRef, {
+        isApproved,
+        updatedAt: serverTimestamp()
+      })
+    } catch (error) {
+      console.error('Error updating review:', error)
+      throw error
+    }
+  }
+}
+
+// Coupons Management
+export const adminCoupons = {
+  getCoupons: async () => {
+    try {
+      const q = query(collection(db, 'coupons'), orderBy('createdAt', 'desc'))
+      const querySnapshot = await getDocs(q)
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    } catch (error) {
+      console.error('Error fetching coupons:', error)
+      throw error
+    }
+  },
+
+  addCoupon: async (couponData) => {
+    try {
+      const couponWithTimestamp = {
+        ...couponData,
+        usedCount: 0,
+        totalDiscount: 0,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }
+      const docRef = await addDoc(collection(db, 'coupons'), couponWithTimestamp)
+      return { id: docRef.id, ...couponWithTimestamp }
+    } catch (error) {
+      console.error('Error adding coupon:', error)
+      throw error
+    }
+  }
+}
+
+// Shipping Management
+export const adminShipping = {
+  getZones: async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'shippingZones'))
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    } catch (error) {
+      console.error('Error fetching shipping zones:', error)
+      throw error
+    }
+  },
+
+  getMethods: async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'shippingMethods'))
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    } catch (error) {
+      console.error('Error fetching shipping methods:', error)
       throw error
     }
   }

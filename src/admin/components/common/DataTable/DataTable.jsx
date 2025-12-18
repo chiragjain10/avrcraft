@@ -1,3 +1,4 @@
+// components/common/DataTable/DataTable.jsx
 import React, { useState, useMemo } from 'react'
 import { ChevronUp, ChevronDown, Loader2 } from 'lucide-react'
 import styles from './DataTable.module.css'

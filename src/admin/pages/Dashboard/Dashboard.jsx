@@ -1,15 +1,16 @@
-import { 
-  Package, 
-  FolderOpen, 
-  FileText, 
-  ShoppingCart, 
+import {
+  Package,
+  FolderOpen,
+  FileText,
+  ShoppingCart,
   TrendingUp,
   Users,
   DollarSign,
   Eye,
   Users as ArtisansIcon,
   Award,
-  Palette
+  Palette,
+  Star
 } from 'lucide-react'
 import { useAdmin } from '../../contexts/AdminContext'
 import StatsCard from '../../components/common/StatsCard/StatsCard'
@@ -31,7 +32,7 @@ const Dashboard = () => {
   const statCards = [
     {
       title: 'Total Products',
-      value: updatedStats.totalProducts || 0,
+      value: stats.totalProducts || 0,
       icon: Package,
       color: 'primary',
       change: '+12%',
@@ -39,7 +40,7 @@ const Dashboard = () => {
     },
     {
       title: 'Total Categories',
-      value: updatedStats.totalCategories || 0,
+      value: stats.totalCategories || 0,
       icon: FolderOpen,
       color: 'success',
       change: '+5%',
@@ -47,32 +48,32 @@ const Dashboard = () => {
     },
     {
       title: 'Total Orders',
-      value: updatedStats.totalOrders || 0,
+      value: stats.totalOrders || 0,
       icon: ShoppingCart,
       color: 'warning',
       change: '+23%',
       trend: 'up'
     },
     {
-      title: 'Total Artisans',
-      value: updatedStats.totalArtisans || 0,
-      icon: ArtisansIcon,
+      title: 'Total Customers',
+      value: stats.totalCustomers || 0,
+      icon: Users,
       color: 'info',
       change: '+8%',
       trend: 'up'
     },
     {
-      title: 'Featured Artisans',
-      value: updatedStats.featuredArtisans || 0,
+      title: 'Total Artisans',
+      value: stats.totalArtisans || 0,
       icon: Award,
       color: 'purple',
       change: '+15%',
       trend: 'up'
     },
     {
-      title: 'Active Artisans',
-      value: updatedStats.activeArtisans || 0,
-      icon: Users,
+      title: 'Featured Artisans',
+      value: stats.featuredArtisans || 0,
+      icon: Star,
       color: 'orange',
       change: '+10%',
       trend: 'up'
@@ -121,6 +122,30 @@ const Dashboard = () => {
       icon: TrendingUp,
       path: '/admin/analytics',
       color: 'warning'
+    }
+  ]
+
+  const metricsData = [
+    {
+      icon: Eye,
+      label: 'Total Visitors',
+      value: '1,247',
+      change: '+15% from last week',
+      positive: true
+    },
+    {
+      icon: DollarSign,
+      label: 'Revenue',
+      value: `₹${(stats.revenue || 84560).toLocaleString()}`,
+      change: '+22% from last month',
+      positive: true
+    },
+    {
+      icon: Palette,
+      label: 'Artisan Crafts',
+      value: `${stats.totalArtisans || 0}+`,
+      change: '5 new crafts added',
+      positive: true
     }
   ]
 

@@ -1,3 +1,4 @@
+// pages/Orders/Orders.js
 import React, { useState, useEffect } from 'react'
 import { 
   Search, 
@@ -7,9 +8,13 @@ import {
   CheckCircle,
   Clock,
   XCircle,
-  DollarSign
+  DollarSign,
+  ShoppingCart,
+  Download
 } from 'lucide-react'
 import { useAdmin } from '../../contexts/AdminContext'
+import { collection, getDocs, query, orderBy, where } from 'firebase/firestore'
+import { db } from '../../../utils/firebase/config'
 import DataTable from '../../components/common/DataTable/DataTable'
 import styles from './Orders.module.css'
 
@@ -28,60 +33,18 @@ const Orders = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true)
-      // Mock orders data - in real app, fetch from Firebase
-      const mockOrders = [
-        {
-          id: 'ORD-0012',
-          customer: 'Rajesh Kumar',
-          email: 'rajesh@example.com',
-          total: 4500,
-          status: 'completed',
-          items: 3,
-          createdAt: new Date('2024-01-15'),
-          shippingAddress: 'Mumbai, Maharashtra'
-        },
-        {
-          id: 'ORD-0011',
-          customer: 'Priya Sharma',
-          email: 'priya@example.com',
-          total: 3200,
-          status: 'processing',
-          items: 2,
-          createdAt: new Date('2024-01-14'),
-          shippingAddress: 'Delhi, NCR'
-        },
-        {
-          id: 'ORD-0010',
-          customer: 'Amit Patel',
-          email: 'amit@example.com',
-          total: 8900,
-          status: 'shipped',
-          items: 5,
-          createdAt: new Date('2024-01-13'),
-          shippingAddress: 'Bangalore, Karnataka'
-        },
-        {
-          id: 'ORD-0009',
-          customer: 'Sunita Reddy',
-          email: 'sunita@example.com',
-          total: 2100,
-          status: 'pending',
-          items: 1,
-          createdAt: new Date('2024-01-12'),
-          shippingAddress: 'Hyderabad, Telangana'
-        },
-        {
-          id: 'ORD-0008',
-          customer: 'Vikram Singh',
-          email: 'vikram@example.com',
-          total: 6700,
-          status: 'cancelled',
-          items: 4,
-          createdAt: new Date('2024-01-11'),
-          shippingAddress: 'Pune, Maharashtra'
-        }
-      ]
-      setOrders(mockOrders)
+      const ordersRef = collection(db, 'orders')
+      const q = query(ordersRef, orderBy('createdAt', 'desc'))
+      const querySnapshot = await getDocs(q)
+      
+      const ordersData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        // Ensure proper date format
+        createdAt: doc.data().createdAt?.toDate ? doc.data().createdAt.toDate() : new Date(doc.data().createdAt)
+      }))
+      
+      setOrders(ordersData)
     } catch (error) {
       console.error('Error fetching orders:', error)
       addNotification({
@@ -95,9 +58,10 @@ const Orders = () => {
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
-      order.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.customer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.email?.toLowerCase().includes(searchQuery.toLowerCase())
+      order.orderId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customerEmail?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.id?.toLowerCase().includes(searchQuery.toLowerCase())
     
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter
     
@@ -139,20 +103,25 @@ const Orders = () => {
   }
 
   const formatDate = (date) => {
-    return date.toLocaleDateString('en-IN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
+    if (!date) return 'N/A'
+    try {
+      return new Date(date).toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
+    } catch (error) {
+      return 'Invalid Date'
+    }
   }
 
   const columns = [
     {
-      key: 'id',
+      key: 'orderId',
       label: 'Order ID',
       render: (order) => (
         <div className={styles.orderId}>
-          <strong>{order.id}</strong>
+          <strong>{order.orderId || order.id.substring(0, 8)}</strong>
           <span className={styles.orderDate}>{formatDate(order.createdAt)}</span>
         </div>
       ),
@@ -163,8 +132,8 @@ const Orders = () => {
       label: 'Customer',
       render: (order) => (
         <div className={styles.customerInfo}>
-          <strong>{order.customer}</strong>
-          <span className={styles.customerEmail}>{order.email}</span>
+          <strong>{order.customerName || 'Customer'}</strong>
+          <span className={styles.customerEmail}>{order.customerEmail || order.customerEmail}</span>
         </div>
       ),
       sortable: true
@@ -173,7 +142,9 @@ const Orders = () => {
       key: 'items',
       label: 'Items',
       render: (order) => (
-        <span className={styles.itemsCount}>{order.items} items</span>
+        <span className={styles.itemsCount}>
+          {order.items?.length || order.totalItems || 0} items
+        </span>
       ),
       sortable: true
     },
@@ -183,7 +154,7 @@ const Orders = () => {
       render: (order) => (
         <div className={styles.totalAmount}>
           <DollarSign size={14} />
-          <span>₹{order.total.toLocaleString()}</span>
+          <span>₹{(order.totalAmount || order.total || 0).toLocaleString()}</span>
         </div>
       ),
       sortable: true
@@ -194,7 +165,7 @@ const Orders = () => {
       render: (order) => (
         <div className={`${styles.status} ${getStatusColor(order.status)}`}>
           {getStatusIcon(order.status)}
-          <span>{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+          <span>{order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || 'Pending'}</span>
         </div>
       )
     },
@@ -202,7 +173,9 @@ const Orders = () => {
       key: 'shipping',
       label: 'Shipping',
       render: (order) => (
-        <span className={styles.shippingAddress}>{order.shippingAddress}</span>
+        <span className={styles.shippingAddress}>
+          {order.shippingAddress?.city || 'N/A'}
+        </span>
       )
     },
     {
@@ -213,6 +186,7 @@ const Orders = () => {
           <button 
             className={styles.actionButton}
             title="View order details"
+            onClick={() => handleViewOrder(order)}
           >
             <Eye size={16} />
           </button>
@@ -221,6 +195,11 @@ const Orders = () => {
       width: '80px'
     }
   ]
+
+  const handleViewOrder = (order) => {
+    // Will implement order details modal
+    console.log('View order:', order.id)
+  }
 
   const statusOptions = [
     { value: 'all', label: 'All Status' },
@@ -240,6 +219,12 @@ const Orders = () => {
           <p className={styles.pageSubtitle}>
             Manage customer orders and track order status
           </p>
+        </div>
+        <div className={styles.headerActions}>
+          <button className={styles.exportButton}>
+            <Download size={18} />
+            Export
+          </button>
         </div>
       </div>
 
@@ -268,6 +253,52 @@ const Orders = () => {
               </option>
             ))}
           </select>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className={styles.statsSummary}>
+        <div className={styles.statCard}>
+          <div className={styles.statIcon}>
+            <ShoppingCart size={24} />
+          </div>
+          <div className={styles.statContent}>
+            <div className={styles.statNumber}>{orders.length}</div>
+            <div className={styles.statLabel}>Total Orders</div>
+          </div>
+        </div>
+        <div className={styles.statCard}>
+          <div className={styles.statIcon}>
+            <CheckCircle size={24} />
+          </div>
+          <div className={styles.statContent}>
+            <div className={styles.statNumber}>
+              {orders.filter(o => o.status === 'completed').length}
+            </div>
+            <div className={styles.statLabel}>Completed</div>
+          </div>
+        </div>
+        <div className={styles.statCard}>
+          <div className={styles.statIcon}>
+            <Truck size={24} />
+          </div>
+          <div className={styles.statContent}>
+            <div className={styles.statNumber}>
+              {orders.filter(o => o.status === 'shipped').length}
+            </div>
+            <div className={styles.statLabel}>Shipped</div>
+          </div>
+        </div>
+        <div className={styles.statCard}>
+          <div className={styles.statIcon}>
+            <Clock size={24} />
+          </div>
+          <div className={styles.statContent}>
+            <div className={styles.statNumber}>
+              {orders.filter(o => o.status === 'pending').length}
+            </div>
+            <div className={styles.statLabel}>Pending</div>
+          </div>
         </div>
       </div>
 

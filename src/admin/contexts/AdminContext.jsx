@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
-import { 
-  collection, 
-  query, 
-  where, 
-  getDocs, 
+import {
+  collection,
+  query,
+  where,
+  getDocs,
   orderBy,
   onSnapshot,
   doc,
@@ -38,7 +38,7 @@ const adminReducer = (state, action) => {
         ...state,
         loading: action.payload
       }
-    
+
     case 'SET_ADMIN_USER':
       return {
         ...state,
@@ -46,7 +46,7 @@ const adminReducer = (state, action) => {
         isAdmin: action.payload.isAdmin,
         loading: false
       }
-    
+
     case 'SET_STATS':
       return {
         ...state,
@@ -55,31 +55,31 @@ const adminReducer = (state, action) => {
           ...action.payload
         }
       }
-    
+
     case 'ADD_NOTIFICATION':
       return {
         ...state,
         notifications: [action.payload, ...state.notifications.slice(0, 4)]
       }
-    
+
     case 'CLEAR_NOTIFICATION':
       return {
         ...state,
         notifications: state.notifications.filter(notif => notif.id !== action.payload)
       }
-    
+
     case 'TOGGLE_SIDEBAR':
       return {
         ...state,
         sidebarOpen: !state.sidebarOpen
       }
-    
+
     case 'SET_SIDEBAR':
       return {
         ...state,
         sidebarOpen: action.payload
       }
-    
+
     default:
       return state
   }
@@ -107,26 +107,26 @@ export const AdminProvider = ({ children }) => {
 
       try {
         dispatch({ type: 'SET_LOADING', payload: true })
-        
+
         // Check if user has admin role in Firestore
         const usersRef = collection(db, 'users')
         const q = query(usersRef, where('uid', '==', user.uid))
         const querySnapshot = await getDocs(q)
-        
+
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data()
-          
+
           // Check for admin role
-          const isAdmin = userData.role === 'admin' || 
-                         userData.isAdmin === true || 
-                         user.email === "admin@avrcraft.com" // Default admin email
-          
+          const isAdmin = userData.role === 'admin' ||
+            userData.isAdmin === true ||
+            user.email === "admin@avrcraft.com" // Default admin email
+
           console.log('User data:', userData)
           console.log('Is admin:', isAdmin)
-          
-          dispatch({ 
-            type: 'SET_ADMIN_USER', 
-            payload: { user: { ...user, ...userData }, isAdmin } 
+
+          dispatch({
+            type: 'SET_ADMIN_USER',
+            payload: { user: { ...user, ...userData }, isAdmin }
           })
 
           // If user document exists but no role, set default role
@@ -146,13 +146,13 @@ export const AdminProvider = ({ children }) => {
             role: user.email === "admin@avrcraft.com" ? 'admin' : 'customer',
             createdAt: new Date()
           }
-          
+
           await setDoc(doc(db, 'users', user.uid), userData)
-          
+
           const isAdmin = user.email === "admin@avrcraft.com"
-          dispatch({ 
-            type: 'SET_ADMIN_USER', 
-            payload: { user: { ...user, ...userData }, isAdmin } 
+          dispatch({
+            type: 'SET_ADMIN_USER',
+            payload: { user: { ...user, ...userData }, isAdmin }
           })
         }
       } catch (error) {
@@ -175,22 +175,35 @@ export const AdminProvider = ({ children }) => {
         // Products count
         const productsQuery = query(collection(db, 'products'))
         const productsSnapshot = await getDocs(productsQuery)
-        
+
         // Categories count
         const categoriesQuery = query(collection(db, 'categories'))
         const categoriesSnapshot = await getDocs(categoriesQuery)
-        
+
         // Blogs count
         const blogsQuery = query(collection(db, 'blogs'))
         const blogsSnapshot = await getDocs(blogsQuery)
-        
-        // Recent orders
+
+        // Orders count and recent
         const ordersQuery = query(collection(db, 'orders'), orderBy('createdAt', 'desc'))
         const ordersSnapshot = await getDocs(ordersQuery)
         const recentOrders = ordersSnapshot.docs.slice(0, 5).map(doc => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate()
         }))
+
+        // Artisans count
+        const artisansQuery = query(collection(db, 'artisans'))
+        const artisansSnapshot = await getDocs(artisansQuery)
+        const totalArtisans = artisansSnapshot.size
+        const featuredArtisans = artisansSnapshot.docs.filter(doc => doc.data().isFeatured).length
+        const activeArtisans = artisansSnapshot.docs.filter(doc => doc.data().isActive !== false).length
+
+        // Customers count
+        const usersQuery = query(collection(db, 'users'), where('role', '==', 'customer'))
+        const usersSnapshot = await getDocs(usersQuery)
+        const totalCustomers = usersSnapshot.size
 
         dispatch({
           type: 'SET_STATS',
@@ -199,6 +212,10 @@ export const AdminProvider = ({ children }) => {
             totalCategories: categoriesSnapshot.size,
             totalBlogs: blogsSnapshot.size,
             totalOrders: ordersSnapshot.size,
+            totalArtisans,
+            featuredArtisans,
+            activeArtisans,
+            totalCustomers,
             recentOrders
           }
         })
@@ -209,21 +226,37 @@ export const AdminProvider = ({ children }) => {
 
     fetchStats()
 
-    // Real-time listener for orders
+    // Real-time listeners
     const ordersQuery = query(collection(db, 'orders'), orderBy('createdAt', 'desc'))
-    const unsubscribe = onSnapshot(ordersQuery, (snapshot) => {
+    const unsubscribeOrders = onSnapshot(ordersQuery, (snapshot) => {
       const recentOrders = snapshot.docs.slice(0, 5).map(doc => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate()
       }))
-      
+
       dispatch({
         type: 'SET_STATS',
-        payload: { recentOrders, totalOrders: snapshot.size }
+        payload: {
+          recentOrders,
+          totalOrders: snapshot.size
+        }
       })
     })
 
-    return () => unsubscribe()
+    // Products listener
+    const productsQuery = query(collection(db, 'products'))
+    const unsubscribeProducts = onSnapshot(productsQuery, (snapshot) => {
+      dispatch({
+        type: 'SET_STATS',
+        payload: { totalProducts: snapshot.size }
+      })
+    })
+
+    return () => {
+      unsubscribeOrders()
+      unsubscribeProducts()
+    }
   }, [state.isAdmin])
 
   // Add notification
@@ -235,7 +268,7 @@ export const AdminProvider = ({ children }) => {
       ...notification
     }
     dispatch({ type: 'ADD_NOTIFICATION', payload: notificationWithId })
-    
+
     // Auto remove after 5 seconds
     setTimeout(() => {
       dispatch({ type: 'CLEAR_NOTIFICATION', payload: id })

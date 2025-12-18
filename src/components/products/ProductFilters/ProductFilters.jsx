@@ -64,7 +64,6 @@ const ProductFilters = ({ categories = [], filters, onFilterChange }) => {
   };
 
   const handleCategoryChange = (categoryId) => {
-    console.log('Category changed to:', categoryId);
     onFilterChange({
       ...filters,
       category: categoryId
@@ -106,13 +105,6 @@ const ProductFilters = ({ categories = [], filters, onFilterChange }) => {
     });
   };
 
-  const handleSpecialFilterChange = (filterType, value) => {
-    onFilterChange({
-      ...filters,
-      [filterType]: value
-    })
-  }
-
   return (
     <div className={styles.filters}>
       {/* Categories Section */}
@@ -143,25 +135,25 @@ const ProductFilters = ({ categories = [], filters, onFilterChange }) => {
 
             {/* Individual categories */}
             {categories.map(category => {
-              const categoryId = category.id || category.name;
               const categoryName = category.name || category.categoryName || 'Unnamed Category';
+              const key = category.id || categoryName; // sirf React key
 
               return (
-                <label key={categoryId} className={styles.option}>
+                <label key={key} className={styles.option}>
                   <input
                     type="radio"
                     name="category"
-                    checked={filters.category === categoryId || filters.category === categoryName}
-                    onChange={() => handleCategoryChange(categoryId)}
+                    // filters.category ab directly category ka name store karega
+                    checked={filters.category === categoryName}
+                    onChange={() => handleCategoryChange(categoryName)}
                     className={styles.radio}
                   />
                   <span className={styles.customRadio}></span>
-                  <span className={styles.optionText}>
-                    {categoryName}
-                  </span>
+                  <span className={styles.optionText}>{categoryName}</span>
                 </label>
               );
             })}
+
           </div>
         )}
       </div>
@@ -432,88 +424,6 @@ const ProductFilters = ({ categories = [], filters, onFilterChange }) => {
               />
               <span className={styles.customRadio}></span>
               <span className={styles.optionText}>Out of Stock</span>
-            </label>
-          </div>
-        )}
-      </div>
-
-      {/* Special Filters Section */}
-      <div className={styles.section}>
-        <button
-          className={styles.sectionHeader}
-          onClick={() => toggleSection('special')}
-          type="button"
-        >
-          <span className={styles.sectionTitle}>Special Collections</span>
-          {openSections.special ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-        </button>
-
-        {openSections.special && (
-          <div className={styles.sectionContent}>
-            <label className={styles.checkboxOption}>
-              <input
-                type="checkbox"
-                checked={filters.isBestseller || false}
-                onChange={(e) => handleSpecialFilterChange('isBestseller', e.target.checked)}
-                className={styles.checkbox}
-              />
-              <span className={styles.customCheckbox}></span>
-              <span className={styles.optionText}>Bestsellers Only</span>
-            </label>
-
-            <label className={styles.checkboxOption}>
-              <input
-                type="checkbox"
-                checked={filters.isFiction || false}
-                onChange={(e) => handleSpecialFilterChange('isFiction', e.target.checked)}
-                className={styles.checkbox}
-              />
-              <span className={styles.customCheckbox}></span>
-              <span className={styles.optionText}>Fiction Books</span>
-            </label>
-
-            <label className={styles.checkboxOption}>
-              <input
-                type="checkbox"
-                checked={filters.isNonFiction || false}
-                onChange={(e) => handleSpecialFilterChange('isNonFiction', e.target.checked)}
-                className={styles.checkbox}
-              />
-              <span className={styles.customCheckbox}></span>
-              <span className={styles.optionText}>Non-Fiction Books</span>
-            </label>
-
-            <label className={styles.checkboxOption}>
-              <input
-                type="checkbox"
-                checked={filters.isChildrenBook || false}
-                onChange={(e) => handleSpecialFilterChange('isChildrenBook', e.target.checked)}
-                className={styles.checkbox}
-              />
-              <span className={styles.customCheckbox}></span>
-              <span className={styles.optionText}>Children's Books</span>
-            </label>
-
-            <label className={styles.checkboxOption}>
-              <input
-                type="checkbox"
-                checked={filters.isStationary || false}
-                onChange={(e) => handleSpecialFilterChange('isStationary', e.target.checked)}
-                className={styles.checkbox}
-              />
-              <span className={styles.customCheckbox}></span>
-              <span className={styles.optionText}>Stationary</span>
-            </label>
-
-            <label className={styles.checkboxOption}>
-              <input
-                type="checkbox"
-                checked={filters.isGift || false}
-                onChange={(e) => handleSpecialFilterChange('isGift', e.target.checked)}
-                className={styles.checkbox}
-              />
-              <span className={styles.customCheckbox}></span>
-              <span className={styles.optionText}>Gifts</span>
             </label>
           </div>
         )}

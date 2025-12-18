@@ -1,12 +1,12 @@
-// src/hooks/useProducts.js (Updated)
-import { useState, useEffect, useCallback } from 'react'
-import { 
-  collection, 
-  getDocs, 
-  query, 
-  where, 
+// src/hooks/useProducts.js (Improved)
+import { useState, useEffect } from 'react'
+import {
+  collection,
+  getDocs,
+  query,
+  where,
   orderBy,
-  limit 
+  limit
 } from 'firebase/firestore'
 import { db } from '../utils/firebase/config'
 
@@ -15,193 +15,173 @@ export const useProducts = (filters = {}, searchQuery = '') => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const fetchProducts = useCallback(async () => {
-    setLoading(true)
-    setError(null)
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true)
+      setError(null)
 
-    try {
-      let productsQuery = query(
-        collection(db, 'products'),
-        where('isActive', '==', true)
-      )
-
-      console.log('Filters in useProducts:', filters)
-      console.log('Search query:', searchQuery)
-
-      // 🔹 Category filter (MULTIPLE WAYS TO HANDLE)
-      if (filters.category && filters.category.trim() !== '') {
-        console.log('Filtering by category:', filters.category)
-        // Try different field names
-        productsQuery = query(
-          productsQuery,
-          where('category', '==', filters.category)
+      try {
+        let productsQuery = query(
+          collection(db, 'products'),
+          where('isActive', '==', true)
         )
-      }
 
-      // 🔹 Price range filter (apply as separate query)
-      if (filters.priceRange && Array.isArray(filters.priceRange)) {
-        productsQuery = query(
-          productsQuery,
-          where('price', '>=', Number(filters.priceRange[0]) || 0),
-          where('price', '<=', Number(filters.priceRange[1]) || 10000)
-        )
-      }
-
-      const querySnapshot = await getDocs(productsQuery)
-      let productsList = querySnapshot.docs.map(doc => {
-        const data = doc.data()
-        return {
-          id: doc.id,
-          name: data.name || data.productName || '',
-          author: data.author || '',
-          description: data.description || '',
-          price: Number(data.price) || 0,
-          originalPrice: Number(data.originalPrice) || null,
-          stock: Number(data.stock) || 0,
-          rating: Number(data.rating) || 0,
-          reviewCount: Number(data.reviewCount) || 0,
-          isNew: Boolean(data.isNew),
-          isBestseller: Boolean(data.isBestseller),
-          category: data.category || data.categoryId || data.categoryName || '',
-          images: Array.isArray(data.images) ? data.images : [],
-          tags: Array.isArray(data.tags) ? data.tags : [],
-          createdAt: data.createdAt || null,
-          format: data.format || 'paperback',
-          isActive: Boolean(data.isActive),
-          // Additional fields for filtering
-          isFiction: Boolean(data.isFiction),
-          isNonFiction: Boolean(data.isNonFiction),
-          isChildrenBook: Boolean(data.isChildrenBook),
-          isStationary: Boolean(data.isStationary),
-          isGift: Boolean(data.isGift),
-          ...data
+        // 🔹 Search functionality
+        if (searchQuery && searchQuery.trim() !== '') {
+          productsQuery = query(productsQuery, orderBy('name'))
         }
-      })
 
-      console.log('Raw products count:', productsList.length)
-
-      // 🔹 CLIENT-SIDE FILTERING (for complex queries)
-      if (filters.category && filters.category.trim() !== '') {
-        productsList = productsList.filter(product => {
-          // Match multiple possible category fields
-          const categoryMatch = 
-            product.category === filters.category ||
-            product.categoryId === filters.category ||
-            product.categoryName === filters.category ||
-            (product.category && product.category.toLowerCase() === filters.category.toLowerCase()) ||
-            (product.categoryId && product.categoryId.toLowerCase() === filters.category.toLowerCase())
-          
-          return categoryMatch
-        })
-        console.log('After category filter:', productsList.length)
-      }
-
-      // 🔹 Bestseller filter
-      if (filters.isBestseller) {
-        productsList = productsList.filter(product => product.isBestseller === true)
-      }
-
-      // 🔹 Fiction filter
-      if (filters.isFiction) {
-        productsList = productsList.filter(product => product.isFiction === true)
-      }
-
-      // 🔹 Non-Fiction filter
-      if (filters.isNonFiction) {
-        productsList = productsList.filter(product => product.isNonFiction === true)
-      }
-
-      // 🔹 Children's Books filter
-      if (filters.isChildrenBook) {
-        productsList = productsList.filter(product => product.isChildrenBook === true)
-      }
-
-      // 🔹 Stationary filter
-      if (filters.isStationary) {
-        productsList = productsList.filter(product => product.isStationary === true)
-      }
-
-      // 🔹 Gifts filter
-      if (filters.isGift) {
-        productsList = productsList.filter(product => product.isGift === true)
-      }
-
-      // 🔹 Search functionality
-      if (searchQuery && searchQuery.trim() !== '') {
-        const queryLower = searchQuery.toLowerCase().trim()
-        productsList = productsList.filter(product => {
-          return (
-            product.name?.toLowerCase().includes(queryLower) ||
-            product.author?.toLowerCase().includes(queryLower) ||
-            product.description?.toLowerCase().includes(queryLower) ||
-            product.category?.toLowerCase().includes(queryLower) ||
-            product.tags?.some(tag => tag.toLowerCase().includes(queryLower))
+        // 🔹 Price range filter
+        if (filters.priceRange) {
+          productsQuery = query(
+            productsQuery,
+            where('price', '>=', Number(filters.priceRange[0])),
+            where('price', '<=', Number(filters.priceRange[1])),
+            orderBy('price')
           )
-        })
-        console.log('After search filter:', productsList.length)
-      }
+        } else {
+          productsQuery = query(productsQuery, orderBy('createdAt', 'desc'))
+        }
 
-      // 🔹 Rating filter
-      if (filters.rating && filters.rating > 0) {
-        productsList = productsList.filter(product => 
-          (product.rating || 0) >= filters.rating
-        )
-      }
-
-      // 🔹 Format filter
-      if (filters.format && filters.format.trim() !== '') {
-        productsList = productsList.filter(product => 
-          product.format?.toLowerCase() === filters.format.toLowerCase()
-        )
-      }
-
-      // 🔹 Author filter
-      if (filters.author && filters.author.trim() !== '') {
-        productsList = productsList.filter(product => 
-          product.author?.toLowerCase() === filters.author.toLowerCase()
-        )
-      }
-
-      // 🔹 Availability filter
-      if (filters.availability && filters.availability !== 'all') {
-        productsList = productsList.filter(product => {
-          if (filters.availability === 'in-stock') {
-            return product.stock > 0
-          } else if (filters.availability === 'out-of-stock') {
-            return product.stock <= 0
+        // 🔹 Category & special category filters
+        if (filters.category) {
+          const cat = filters.category;
+          if (cat.toLowerCase() === 'Bestsellers'.toLowerCase()) {
+            productsQuery = query(productsQuery, where('isBestseller', '==', true));
+          } else if (cat.toLowerCase() === 'Fiction'.toLowerCase()) {
+            productsQuery = query(productsQuery, where('isFiction', '==', true));
+          } else if (cat.toLowerCase() === 'Non-Fiction'.toLowerCase()) {
+            productsQuery = query(productsQuery, where('isNonFiction', '==', true));
+          } else if (cat.toLowerCase() === 'Childrens'.toLowerCase()) {
+            productsQuery = query(productsQuery, where('isChildrens', '==', true));
+          } else if (cat.toLowerCase() === 'Stationery'.toLowerCase()) {
+            productsQuery = query(productsQuery, where('isStationery', '==', true));
+          } else if (cat.toLowerCase() === 'Gifts'.toLowerCase()) {
+            productsQuery = query(productsQuery, where('isGift', '==', true));
+          } else {
+            productsQuery = query(
+              productsQuery,
+              where('category', '==', cat)
+            );
           }
-          return true
-        })
-      }
+        }
 
-      // 🔹 Tags filter
-      if (filters.tags && filters.tags.length > 0) {
-        productsList = productsList.filter(product => {
-          if (!product.tags || !Array.isArray(product.tags)) return false
-          return filters.tags.some(tag => 
-            product.tags.includes(tag)
+        // 🔹 Artisan filter
+        if (filters.artisan) {
+          productsQuery = query(
+            productsQuery,
+            where('artisan.name', '==', filters.artisan)
           )
-        })
+        }
+
+        // 🔹 Material filter
+        if (filters.material) {
+          productsQuery = query(
+            productsQuery,
+            where('material', '==', filters.material)
+          )
+        }
+
+        const querySnapshot = await getDocs(productsQuery)
+        let productsList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+
+        if (searchQuery && searchQuery.trim() !== '') {
+          const query = searchQuery.toLowerCase().trim()
+          productsList = productsList.filter(product =>
+            product.name?.toLowerCase().includes(query) ||
+            product.description?.toLowerCase().includes(query) ||
+            product.category?.toLowerCase().includes(query) ||
+            product.material?.toLowerCase().includes(query) ||
+            product.artisan?.name?.toLowerCase().includes(query) ||
+            product.tags?.some(tag => tag.toLowerCase().includes(query))
+          )
+        }
+
+        // 🔹 Client-side availability filter
+        if (filters.availability && filters.availability !== 'all') {
+          productsList = productsList.filter(product => {
+            if (filters.availability === 'in-stock') {
+              return product.stock > 0
+            } else if (filters.availability === 'out-of-stock') {
+              return product.stock === 0
+            }
+            return true
+          })
+        }
+
+        // 🔹 Client-side rating filter
+        if (filters.rating && filters.rating > 0) {
+          productsList = productsList.filter(
+            product => (product.rating || 0) >= filters.rating
+          )
+        }
+
+        setProducts(productsList)
+      } catch (err) {
+        console.error('Error fetching products:', err)
+        setError('Failed to load products. Please try again.')
+        setProducts([])
+      } finally {
+        setLoading(false)
       }
-
-      console.log('Final products count:', productsList.length)
-      setProducts(productsList)
-
-    } catch (err) {
-      console.error('Error fetching products:', err)
-      setError({
-        message: 'Failed to load products. Please try again.',
-        details: err.message
-      })
-      setProducts([])
-    } finally {
-      setLoading(false)
     }
+
+    fetchProducts()
   }, [filters, searchQuery])
 
-  useEffect(() => {
-    fetchProducts()
-  }, [fetchProducts])
+  return { products, loading, error }
+}
 
-  return { products, loading, error, refetch: fetchProducts }
+// Additional hook for search suggestions
+export const useSearchSuggestions = (searchQuery, limit = 5) => {
+  const [suggestions, setSuggestions] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (!searchQuery || searchQuery.length < 2) {
+        setSuggestions([])
+        return
+      }
+
+      setLoading(true)
+      try {
+        const productsQuery = query(
+          collection(db, 'products'),
+          where('isActive', '==', true),
+          orderBy('name'),
+          limit(10)
+        )
+
+        const querySnapshot = await getDocs(productsQuery)
+        const productsList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+
+        const queryLower = searchQuery.toLowerCase()
+        const filtered = productsList
+          .filter(product =>
+            product.name?.toLowerCase().includes(queryLower) ||
+            product.category?.toLowerCase().includes(queryLower)
+          )
+          .slice(0, limit)
+
+        setSuggestions(filtered)
+      } catch (error) {
+        console.error('Error fetching search suggestions:', error)
+        setSuggestions([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    const debounceTimer = setTimeout(fetchSuggestions, 300)
+    return () => clearTimeout(debounceTimer)
+  }, [searchQuery, limit])
+
+  return { suggestions, loading }
 }

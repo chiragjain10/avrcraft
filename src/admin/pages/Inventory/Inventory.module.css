@@ -1,0 +1,279 @@
+/* pages/Inventory/Inventory.module.css */
+.inventory {
+  padding: 20px;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--admin-text);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--admin-light-text);
+  font-size: 15px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.statCard {
+  background: var(--admin-light-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.statCard.warning {
+  border-color: var(--admin-warning);
+}
+
+.statCard.warning .statIcon {
+  background: var(--admin-warning-light);
+  color: var(--admin-warning);
+}
+
+.statCard.error {
+  border-color: var(--admin-error);
+}
+
+.statCard.error .statIcon {
+  background: var(--admin-error-light);
+  color: var(--admin-error);
+}
+
+.statIcon {
+  width: 48px;
+  height: 48px;
+  background: var(--admin-primary-light);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--admin-primary);
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statNumber {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--admin-text);
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  color: var(--admin-light-text);
+  font-size: 14px;
+}
+
+.searchSection {
+  background: var(--admin-light-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.searchBox {
+  position: relative;
+  flex: 1;
+}
+
+.searchBox svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--admin-light-text);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-size: 15px;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+}
+
+.thresholdControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.thresholdControl label {
+  color: var(--admin-text);
+  font-size: 14px;
+}
+
+.thresholdInput {
+  width: 60px;
+  padding: 8px;
+  border: 1px solid var(--admin-border);
+  border-radius: 4px;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  text-align: center;
+}
+
+.thresholdInput:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+}
+
+.tableSection {
+  background: var(--admin-bg);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Inventory-specific styles */
+.productInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.productImage {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--admin-border);
+}
+
+.productName {
+  font-weight: 600;
+  color: var(--admin-text);
+  margin-bottom: 4px;
+}
+
+.productSku {
+  font-size: 12px;
+  color: var(--admin-light-text);
+}
+
+.category {
+  display: inline-block;
+  padding: 4px 8px;
+  background: var(--admin-light-bg);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--admin-text);
+}
+
+.stock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stockQuantity {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.stockLabel {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.stock.success .stockLabel {
+  background: var(--admin-success-light);
+  color: var(--admin-success);
+}
+
+.stock.warning .stockLabel {
+  background: var(--admin-warning-light);
+  color: var(--admin-warning);
+}
+
+.stock.error .stockLabel {
+  background: var(--admin-error-light);
+  color: var(--admin-error);
+}
+
+.price {
+  font-weight: 600;
+  color: var(--admin-text);
+  font-size: 16px;
+}
+
+.updateButton {
+  padding: 6px 12px;
+  background: var(--admin-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.updateButton:hover {
+  background: var(--admin-primary-dark);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .inventory {
+    padding: 16px;
+  }
+  
+  .stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .searchSection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .thresholdControl {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 24px;
+  }
+  
+  .productInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .productImage {
+    width: 40px;
+    height: 40px;
+  }
+}

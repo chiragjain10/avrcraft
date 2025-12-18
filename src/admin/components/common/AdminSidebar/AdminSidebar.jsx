@@ -1,3 +1,4 @@
+// components/common/AdminSidebar/AdminSidebar.js
 import React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { 
@@ -9,13 +10,20 @@ import {
   BarChart3,
   Settings,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Users,
+  Tag,
+  Truck,
+  Star,
+  PackageOpen,
+  Award,
+  Home
 } from 'lucide-react'
 import { useAdmin } from '../../../contexts/AdminContext'
 import styles from './AdminSidebar.module.css'
 
 const AdminSidebar = () => {
-  const { sidebarOpen, toggleSidebar } = useAdmin()
+  const { sidebarOpen, toggleSidebar, user } = useAdmin()
   const location = useLocation()
 
   const menuItems = [
@@ -38,6 +46,12 @@ const AdminSidebar = () => {
       exact: false
     },
     {
+      path: '/admin/artisans',
+      icon: Award,
+      label: 'Artisans',
+      exact: false
+    },
+    {
       path: '/admin/blogs',
       icon: FileText,
       label: 'Blogs',
@@ -47,6 +61,36 @@ const AdminSidebar = () => {
       path: '/admin/orders',
       icon: ShoppingCart,
       label: 'Orders',
+      exact: false
+    },
+    {
+      path: '/admin/customers',
+      icon: Users,
+      label: 'Customers',
+      exact: false
+    },
+    {
+      path: '/admin/inventory',
+      icon: PackageOpen,
+      label: 'Inventory',
+      exact: false
+    },
+    {
+      path: '/admin/coupons',
+      icon: Tag,
+      label: 'Coupons',
+      exact: false
+    },
+    {
+      path: '/admin/reviews',
+      icon: Star,
+      label: 'Reviews',
+      exact: false
+    },
+    {
+      path: '/admin/shipping',
+      icon: Truck,
+      label: 'Shipping',
       exact: false
     },
     {
@@ -69,7 +113,9 @@ const AdminSidebar = () => {
       <div className={styles.sidebarHeader}>
         {sidebarOpen && (
           <div className={styles.logo}>
-            <div className={styles.logoIcon}>AC</div>
+            <div className={styles.logoIcon}>
+              <Home size={24} />
+            </div>
             <span className={styles.logoText}>AVR Crafts Admin</span>
           </div>
         )}
@@ -119,10 +165,14 @@ const AdminSidebar = () => {
         <div className={styles.sidebarFooter}>
           <div className={styles.userInfo}>
             <div className={styles.userAvatar}>
-              <span>AD</span>
+              {user?.photoURL ? (
+                <img src={user.photoURL} alt={user.displayName} />
+              ) : (
+                <span>{user?.displayName?.charAt(0) || 'A'}</span>
+              )}
             </div>
             <div className={styles.userDetails}>
-              <span className={styles.userName}>Admin User</span>
+              <span className={styles.userName}>{user?.displayName || 'Admin User'}</span>
               <span className={styles.userRole}>Administrator</span>
             </div>
           </div>
