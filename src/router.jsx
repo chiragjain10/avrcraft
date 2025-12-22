@@ -16,6 +16,8 @@ import GiftCards from './pages/GiftCards/GiftCards'
 import Join from './pages/Join/Join'
 import Artisans from './pages/Artisans/Artisans'
 import AdminApp from './admin/AdminApp'
+import PaymentSuccess from './pages/Checkout/PaymentSuccess'
+import PaymentFailed from './pages/Checkout/PaymentFailed'
 import NotFound from './pages/NotFound/NotFound'
 
 const AppRouter = () => {
@@ -56,6 +58,9 @@ const AppRouter = () => {
       {/* Additional redirects for convenience */}
       <Route path="/home" element={<Navigate to="/" replace />} />
       <Route path="/products" element={<Navigate to="/shop" replace />} />
+
+      <Route path="/payment/success" element={<PaymentSuccess />} />
+      <Route path="/payment/failed" element={<PaymentFailed />} />
 
       {/* 404 - Catch all */}
       <Route path="*" element={<NotFound />} />
